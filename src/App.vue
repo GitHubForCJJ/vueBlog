@@ -1,14 +1,26 @@
 <template>
   <div id="app">
     <div class="blogapp">
-      <el-container class="elcon">
+      <div class="aside">aside</div>
+      <div class="mainapp">
+        <div class="main">
+          <router-view></router-view>
+          <!-- 备案信息 -->
+          <footer>©2015 /蜀ICP备18005286号-1</footer>
+        </div>
+      </div>
+
+      <!-- <el-container class="elcon">
         <el-aside class="aside"
-                  width='45px'>Aside</el-aside>
-        <el-main :span="7"
-                 :offset="3"
-                 class="main"><img alt="Vue logo"
-               src="./assets/logo.png"></el-main>
-      </el-container>
+                  width='45px'>Aside
+        </el-aside>
+        <el-main>
+          <div class="main">
+            <router-view></router-view>
+          </div>
+
+        </el-main>
+      </el-container> -->
     </div>
 
   </div>
