@@ -161,6 +161,7 @@
 }
 </style>
 
+import blog from '@/api/blog.js';
 <script>
 export default {
   name: 'blog',
