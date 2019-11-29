@@ -7,7 +7,7 @@
  */
 import axios from 'axios';
 import qs from 'qs';
-import router from '@/router';
+// import router from '@/router';
 import des from '@/utils/des';
 import md5 from '@/utils/md5';
 import getToken from '@/utils/token';
@@ -17,14 +17,14 @@ import { ext } from '@/utils/core';
  * 跳转登录页
  * 携带当前页面路由，以期在登录页面完成登录后返回当前页面
  */
-const toLogin = () => {
-  router.replace({
-    path: '/login',
-    query: {
-      redirect: router.currentRoute.fullPath,
-    },
-  });
-};
+// const toLogin = () => {
+//   router.replace({
+//     path: '/login',
+//     query: {
+//       redirect: router.currentRoute.fullPath,
+//     },
+//   });
+// };
 
 /**
  * 默认基础数据
@@ -73,6 +73,8 @@ const request = ({
     data = qs.stringify(data);
     headers = 'application/x-www-form-urlencoded';
   }
+  window.console.log(data);
+
   return axios({
     url,
     baseURL: process.env.VUE_APP_BASEURL,

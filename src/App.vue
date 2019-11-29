@@ -3,13 +3,15 @@
     <div class="blogApp">
       <div class="aside">
         <div class="top">
-          <div class="flag"></div>
+          <div class="flag">
+            Chen
+          </div>
         </div>
         <div class="bottom">
           <div class="item"> <i class="iconFont">&#xe699;</i></div>
-          <div class="item"> <i class="iconFont">&#xe69a;</i></div>
-          <div class="item"> <i class="iconFont login">&#xe501;</i></div>
-          <div class="item"> <i class="iconFont">&#xe501;</i></div>
+          <!-- <div class="item"> <i class="iconFont">&#xe69a;</i></div> -->
+          <!-- <div class="item"> <i class="iconFont login">&#xe501;</i></div> -->
+          <!-- <div class="item"> <i class="iconFont">&#xe501;</i></div> -->
           <div class="item"> <a href="javascript:"><i class="iconFont git">&#xe606;</i></a></div>
 
         </div>

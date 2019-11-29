@@ -61,134 +61,23 @@
     <ul class="blogCont">
 
       <li class="blogItem"
-          @click="goDetail(1)">
+          v-for="item in blogList"
+          :key="item.BlogNum"
+          :title="item.Title"
+          @click="goDetail(item.BlogNum)">
         <div>
           <div class="itemTop">
             <span class="time">3天前</span>
           </div>
           <h4 class="itemTitle">
             <span class="">
-              使用docker一键启动jackblog的所有版本
+              {{item.Title}}
             </span>
           </h4>
           <div class="itemFooter">
-            <span>阅读 18811</span>
-            <span> . 评论 101</span>
-            <span> . 喜欢 22</span>
-          </div>
-        </div>
-      </li>
-
-      <li class="blogItem"
-          @click="goDetail(2)">
-        <div>
-          <div class="itemTop">
-            <span class="time">4天前</span>
-          </div>
-          <div class="itemTitle">
-            <span class="">.net core3下的webapi附加到进程方法</span>
-          </div>
-          <div class="itemFooter">
-            <span>阅读 311</span>
-            <span> . 评论 101</span>
-            <span> . 喜欢 22</span>
-          </div>
-        </div>
-
-      </li>
-
-      <li class="blogItem"
-          @click="goDetail(3)">
-        <div>
-          <div class="itemTop">
-            <span class="time">3天前</span>
-          </div>
-          <h4 class="itemTitle">
-            <span class="">
-              使用docker一键启动jackblog的所有版本
-            </span>
-          </h4>
-          <div class="itemFooter">
-            <span>阅读 18811</span>
-            <span> . 评论 101</span>
-            <span> . 喜欢 22</span>
-          </div>
-        </div>
-
-      </li>
-
-      <li class="blogItem"
-          @click="goDetail(1)">
-        <div>
-          <div class="itemTop">
-            <span class="time">3天前</span>
-          </div>
-          <h4 class="itemTitle">
-            <span class="">
-              使用docker一键启动jackblog的所有版本
-            </span>
-          </h4>
-          <div class="itemFooter">
-            <span>阅读 18811</span>
-            <span> . 评论 101</span>
-            <span> . 喜欢 22</span>
-          </div>
-        </div>
-      </li>
-
-      <li class="blogItem"
-          @click="goDetail(2)">
-        <div>
-          <div class="itemTop">
-            <span class="time">4天前</span>
-          </div>
-          <div class="itemTitle">
-            <span class="">.net core3下的webapi附加到进程方法</span>
-          </div>
-          <div class="itemFooter">
-            <span>阅读 311</span>
-            <span> . 评论 101</span>
-            <span> . 喜欢 22</span>
-          </div>
-        </div>
-
-      </li>
-
-      <li class="blogItem"
-          @click="goDetail(3)">
-        <div>
-          <div class="itemTop">
-            <span class="time">3天前</span>
-          </div>
-          <h4 class="itemTitle">
-            <span class="">
-              使用docker一键启动jackblog的所有版本
-            </span>
-          </h4>
-          <div class="itemFooter">
-            <span>阅读 18811</span>
-            <span> . 评论 101</span>
-            <span> . 喜欢 22</span>
-          </div>
-        </div>
-
-      </li>
-
-      <li class="blogItem"
-          @click="goDetail(1)">
-        <div>
-          <div class="itemTop">
-            <span class="time">3天前</span>
-          </div>
-          <h4 class="itemTitle">
-            <span class="">
-              使用docker一键启动jackblog的所有版本
-            </span>
-          </h4>
-          <div class="itemFooter">
-            <span>阅读 18811</span>
-            <span> . 评论 101</span>
-            <span> . 喜欢 22</span>
+            <span>阅读 {{item.Views}}</span>
+            <span> . 评论 {{item.Comments}}</span>
+            <span> . 喜欢 {{item.Start}}</span>
           </div>
         </div>
       </li>
@@ -237,17 +126,38 @@
 </template>
 
 <script>
+import blog from '@/api/blog.js';
 export default {
   name: 'home',
   data () {
     return {
+      blogList: [],
+      blogType: 0,
+      page: 1,
+      limit: 10
 
     }
 
   },
+  created () {
+    window.console.log('ces');
+    this.getListBlog(this.blogType, this.page, this.limit);
+
+  },
   methods: {
-    goDetail (blogid) {
-      this.$router.push({ path: '/blog', query: { blogId: blogid } });
+    goDetail (blogNum) {
+      this.$router.push({ path: '/blog', query: { blogNum: blogNum } });
+    },
+    getListBlog (type, page, limit) {
+
+      blog.getListBlog(type, page, limit).then((res) => {
+        window.console.log(res);
+        if (res.Code == 0) {
+          this.blogList = res.Data;
+        }
+
+      });
+
     }
   }
 }

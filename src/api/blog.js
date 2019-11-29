@@ -8,22 +8,22 @@
 
 import axios from '@/utils/request';
 
-const msg = {
+const blog = {
     // 获取会员的消息
-    getListBlog (obj, page, limit) {
+    getListBlog (type, page, limit) {
         return axios({
             url: '/Blog/GetListBlog',
-            data: { Data: JSON.stringify(obj), Limit: limit, Page: page },
+            data: JSON.stringify({ KID: type, Limit: limit, Page: page }),
             encrypt: false,
         });
     },
     getItemBlog (obj) {
         return axios({
             url: '/Blog/GetItemBlog',
-            data: { Data: JSON.stringify(obj) },
+            data: JSON.stringify(obj),
             encrypt: false,
         });
     },
 };
 
-export default msg;
+export default blog;

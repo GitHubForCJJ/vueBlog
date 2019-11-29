@@ -4,17 +4,19 @@
     <h1 class="blogTitle">" 服务端渲染(Universal/Isomorphic)之React"</h1>
     <!-- 阅读信息 -->
     <div class="viewInfo">
-      <div>阅读 <span>1823</span></div>
-      <div> . 评论 <span>101</span></div>
-      <div> . 喜欢 <span>22</span></div>
+      <div>阅读 <span>{{blogInfo.Views}}</span></div>
+      <div> . 评论 <span>{{blogInfo.Comments}}</span></div>
+      <div> . 喜欢 <span>{{blogInfo.Start}}</span></div>
     </div>
 
     <!-- 内容 -->
+    <div class="blogContent"
+         v-html="blogInfo.Content"></div>
 
     <!-- 评论 -->
     <div class="articleLike">
       <div class="likeTitle">喜欢</div>
-      <div class="likeCount">15</div>
+      <div class="likeCount">{{blogInfo.Start}}</div>
     </div>
 
     <!-- 上下篇文章 -->
@@ -161,28 +163,48 @@
 }
 </style>
 
-import blog from '@/api/blog.js';
+
+
 <script>
+
+import blog from '@/api/blog.js';
+
 export default {
   name: 'blog',
   data () {
     return {
-      id: null//博客id
+      blogNum: '',//博客编号
+      blogInfo: {}
     }
 
   },
   created () {
-    window.console.log('1');
     const params = this.$route.query;
-    this.id = params.blogId;
-    window.console.log(params.blogId);
+    this.blogNum = params.blogNum;
+    window.console.log(params.blogNum);
+    var info = {};
+    info.Num = this.blogNum;
+    this.getBlogDetails(info);
+
   },
   mounted () {
 
   },
   methods: {
-    getBlogDetails () {
+    getBlogDetails (obj) {
       //var id = this.id;
+      blog.getItemBlog(obj).then((res) => {
+        window.console.log(res);
+        window.console.log(res.Data.Content);
+        if (res.Code == 0) {
+          var content = decodeURI(res.Data.Content);
+          window.console.log(content);
+          res.Data.Content = content;
+          this.blogInfo = res.Data;
+          window.console.log(this.blogInfo)
+        }
+      });
+
     }
   }
 }
