@@ -3,9 +3,9 @@
  * @Author: Tangfan
  * @Date: 2019-10-09 10:16:59
  * @Last Modified by: Tangfan
- * @Last Modified time: 2019-11-20 09:47:30
+ * @Last Modified time: 2019-11-29 09:21:35
  */
-import comm from '@/api/comm.js';
+
 import md5 from '@/utils/md5.js';
 /**
  * 获取文件扩展名
@@ -144,18 +144,6 @@ export function checkIDCard (code) {
 }
 
 /**
- * 限制只能输入两位小数的正数
- * @param obj Object
- */
-export function checkNum (obj) {
-  obj.value = obj.value.replace(/[^\d.]/g, '');
-  obj.value = obj.value.replace(/^\./g, '');
-  obj.value = obj.value.replace(/\.{2,}/g, '.');
-  obj.value = obj.value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
-  obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
-}
-
-/**
  * 时间格式化
  * @param {String,Number,Date} oldDate 要转换的时间
  * @param {String} fmt 转换格式
@@ -209,64 +197,6 @@ export function isEmpty (val) {
   return !Object.keys(val).length; // object
 }
 
-/**
- * 微信分享
- * @param {string} title 标题
- * @param {string} imgUrl 图片url
- * @param {string} desc 描述
- * @param {fn} successCallback 成功回调
- */
-export function wxShare (title, imgUrl, desc, successCallback) {
-  const encodeUrl = location.href.split('#')[0];
-  if (!isWechat()) return;// 判断是否微信环境
-  if (title === '' || title == null) {
-    title = '猎尾游';
-  }
-  if (desc === '' || desc == null) {
-    desc = '全球旅游尾单平台，超值划算产品应有尽有，让旅行变得更轻松';
-  }
-  if (imgUrl === '' || imgUrl == null) {
-    imgUrl = '';
-  }
-  // 获取微信签名
-  comm.wxShare(encodeUrl).then((res) => {
-    const data = res.Data;
-    wx.config({
-      debug: false,
-      appId: data.AppId,
-      timestamp: data.Timestamp,
-      nonceStr: data.NonceStr,
-      signature: data.Signature,
-      jsApiList: ['openLocation', 'getLocation', 'updateTimelineShareData', 'updateAppMessageShareData'],
-    });
-    wx.ready(() => {
-      wx.updateTimelineShareData({
-        title, // 标题
-        link: location.href.split('#')[0], // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        imgUrl, // 图片地址
-        success () {
-          // 分享成功
-          if (successCallback) {
-            successCallback();
-          }
-        },
-      });
-      wx.updateAppMessageShareData({
-        title, // 分享标题
-        desc, // 分享描述
-        link: location.href.split('#')[0], // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        imgUrl, // 分享图标
-        success () {
-          if (successCallback) {
-            successCallback();
-          }
-        },
-      });
-    });
-  }).catch((err) => {
-    console.log(err);
-  });
-}
 
 /**
  * 阿拉伯数字转中文汉字

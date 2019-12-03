@@ -24,6 +24,23 @@ const blog = {
             encrypt: false,
         });
     },
-};
+    //获取上下篇
+    getPrenext (obj) {
+        return axios({
+            url: '/Blog/GetPrenextBlog',
+            data: JSON.stringify(obj),
+            encrypt: false,
+        })
+
+    },
+    //获取文章类型列表
+    getBlogTypeList () {
+        return axios({
+            url: '/Blog/GetListBlogTypes',
+            data: {},
+            encrypt: false,
+        })
+    }
+}
 
 export default blog;

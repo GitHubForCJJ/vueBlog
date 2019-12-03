@@ -20,10 +20,19 @@
     </div>
 
     <!-- 上下篇文章 -->
-    <div class="prenext">
+    <!-- <div class="prenext">
       <div class="prev">上一篇：<span class="prevTitle">docker + rancher + jenkins 实现集成测试和自动部署(CI/CD)
         </span></div>
       <div class="next">下一篇：<span class="nextTitle">docker 实践杂记</span></div>
+    </div> -->
+    <div class="prenext">
+      <div class="prev"
+           @click="goPrenext(preBlog.BlogNum)"
+           v-if="preBlog">上一篇：<span class="prevTitle">{{preBlog.Title}}
+        </span></div>
+      <div class="next"
+           @click="goPrenext(nextBlog.BlogNum)"
+           v-if="nextBlog">下一篇：<span class="nextTitle">{{nextBlog.Title}}</span></div>
     </div>
 
   </div>
@@ -77,6 +86,7 @@
   .viewInfo {
     font-size: 13.4px;
     display: flex;
+    padding-bottom: 10px;
   }
 
   pre {
@@ -164,7 +174,6 @@
 </style>
 
 
-
 <script>
 
 import blog from '@/api/blog.js';
@@ -174,23 +183,28 @@ export default {
   data () {
     return {
       blogNum: '',//博客编号
-      blogInfo: {}
+      blogType: 0,
+      blogInfo: {},
+      preBlog: null,
+      nextBlog: null,
     }
 
   },
   created () {
     const params = this.$route.query;
-    this.blogNum = params.blogNum;
+    this.blogNum = params.a;
+    this.blogType = params.t;
     window.console.log(params.blogNum);
     var info = {};
     info.Num = this.blogNum;
     this.getBlogDetails(info);
-
+    this.getPrenext();
   },
   mounted () {
 
   },
   methods: {
+    //获取详情
     getBlogDetails (obj) {
       //var id = this.id;
       blog.getItemBlog(obj).then((res) => {
@@ -205,6 +219,32 @@ export default {
         }
       });
 
+    },
+    //获取上一下篇
+    getPrenext () {
+      var obj = {};
+      obj.BlogNum = this.blogNum;
+      obj.BlogType = this.blogType;
+      blog.getPrenext(obj).then((res) => {
+        window.console.log(res.Data);
+        this.preBlog = null;
+        this.nextBlog = null;
+        if (res.Code == 0 && res.Data != null) {
+          if (res.Data.PreBlog != null) {
+            this.preBlog = res.Data.PreBlog
+          }
+          if (res.Data.NextBlog != null) {
+            this.nextBlog = res.Data.NextBlog
+          }
+        }
+      });
+    },
+    goPrenext (blogNum) {
+      var obj = {};
+      obj.Num = blogNum;
+      this.getBlogDetails(obj);
+      this.blogNum = blogNum;
+      this.getPrenext();
     }
   }
 }
