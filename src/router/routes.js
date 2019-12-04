@@ -14,5 +14,10 @@ export default [{
     path: '/blog',
     name: 'blog',
     component: () => import('@/views/blog/index'),
+},
+{
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/member/login'),
 }
 ];

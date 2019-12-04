@@ -11,8 +11,11 @@
           <div class="item"> <i class="iconFont">&#xe699;</i></div>
           <!-- <div class="item"> <i class="iconFont">&#xe69a;</i></div> -->
           <!-- <div class="item"> <i class="iconFont login">&#xe501;</i></div> -->
-          <!-- <div class="item"> <i class="iconFont">&#xe501;</i></div> -->
-          <div class="item"> <a href="javascript:"><i class="iconFont git">&#xe606;</i></a></div>
+          <div class="item">
+            <router-link :to="{name:'login'}"><a href="javascript:"> <i class="iconFont">&#xe501;</i></a></router-link>
+          </div>
+          <div class="item"> <a target="_blank"
+               href="https://github.com/GitHubForCJJ/vueBlog"><i class="iconFont git">&#xe606;</i></a></div>
 
         </div>
       </div>
@@ -20,14 +23,29 @@
         <div class="main">
           <router-view></router-view>
           <!-- 备案信息 -->
-          <footer>©2018 /蜀ICP备18005286号-1</footer>
+          <footer>©2018 /蜀ICP备18005286号-1 </footer>
         </div>
         <!-- 回到顶部 -->
-        <div class="backTop"
+        <!-- <div class="backTop"
              @click="backTop"
              v-if="showBackTop">
           <a href="javascript:"> <i class="iconFont top">&#xe609;</i></a>
-        </div>
+        </div> -->
+
+        <el-backtop target=".mainApp"
+                    :bottom="100">
+          <div style="{
+        height: 100%;
+        width: 100%;
+        background-color: #f2f5f6;
+        box-shadow: 0 0 6px rgba(0,0,0, .12);
+        text-align: center;
+        line-height: 40px;
+        color: #e78170;
+      }">
+            UP
+          </div>
+        </el-backtop>
       </div>
     </div>
 
@@ -40,7 +58,7 @@ export default {
   name: 'app',
   data: function () {
     return {
-      showBackTop: false,
+
 
     };
   },
@@ -48,7 +66,7 @@ export default {
 
   },
   mounted () {
-    window.addEventListener('scroll', this.handleScroll, true);
+    // window.addEventListener('scroll', this.handleScroll, true);
   },
   methods: {
     handleScroll (e) {
@@ -62,22 +80,13 @@ export default {
       }
 
     },
-    backTop (e) {
-      window.console.log(e);
-      //window.scrollTo(100, 50);
+    backTop () {
 
-      this.$nextTick(() => {
-        setTimeout(() => {
-          var scrollTop = this.$el.querySelector('.backTop');
-          window.console.log(scrollTop.scrollHeight);
-          scrollTop.scrollTop = scrollTop.scrollHeight
-        }, 13)
-      })
     }
 
   },
   destroyed () {
-    window.removeEventListener('scroll', this.scrollToTop);
+    // window.removeEventListener('scroll', this.scrollToTop);
   }
 }
 </script>
