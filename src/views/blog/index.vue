@@ -14,7 +14,8 @@
          v-html="blogInfo.Content"></div>
 
     <!-- 评论 -->
-    <div class="articleLike">
+    <div class="articleLike"
+         @click="goPraise()">
       <div class="likeTitle">喜欢</div>
       <div class="likeCount">{{blogInfo.Start}}</div>
     </div>
@@ -239,12 +240,28 @@ export default {
         }
       });
     },
+    //点击上下篇链接
     goPrenext (blogNum) {
       var obj = {};
       obj.Num = blogNum;
       this.getBlogDetails(obj);
       this.blogNum = blogNum;
       this.getPrenext();
+    },
+    //点赞
+    goPraise () {
+      var token = localStorage.getItem('token');
+      if (token == '' || token.length == 0 || token == undefined) {
+        window.location.href = ""
+      }
+
+      blog.addPraise(token, this.blogNum).then((res) => {
+        window.console.log(res);
+      }).catch((err) => {
+        {
+          window.console.log(err);
+        }
+      })
     }
   }
 }

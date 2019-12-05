@@ -177,6 +177,9 @@ export default {
   created () {
     this.getListBlog(this.blogType, this.page, this.limit);
     this.getTypeList();
+    var url = window.location.href;
+    //设置默认的跳转地址
+    localStorage.setItem('redirurl', url);
   },
   methods: {
     goDetail (blogNum) {

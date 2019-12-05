@@ -40,7 +40,16 @@ const blog = {
             data: {},
             encrypt: false,
         })
+    },
+    //点赞
+    addPraise (token, blognum) {
+        return axios({
+            url: '/Blog/AddPraise',
+            data: JSON.stringify({ BlogNum: blognum, Token: token }),
+            encrypt: false,
+        })
     }
+
 }
 
 export default blog;

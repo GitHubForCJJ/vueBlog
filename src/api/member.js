@@ -19,17 +19,17 @@ const member = {
             encrypt: false,
         });
     },
-    sendQrcode (codekey) {
+    sendQrcode (account, codekey) {
         return axios({
             url: '/Member/SendQrcode',
-            data: JSON.stringify({ key: codekey }),
+            data: JSON.stringify({ QrcodeKey: codekey, UserAccount: account }),
             encrypt: false,
         });
     },
-    memberLogin (account, pass) {
+    memberLogin (obj) {
         return axios({
             url: '/Member/MemberLogin',
-            data: JSON.stringify({ UserAccount: account, UserPassword: pass }),
+            data: JSON.stringify(obj),
             encrypt: false,
         })
 
