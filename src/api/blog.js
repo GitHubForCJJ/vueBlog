@@ -48,6 +48,13 @@ const blog = {
             data: JSON.stringify({ BlogNum: blognum, Token: token }),
             encrypt: false,
         })
+    },
+    isOrNotPraise (memberid, blognum) {
+        return axios({
+            url: '/Blog/IsOrNotPraise',
+            data: JSON.stringify({ where: { BlogNum: blognum, MemberId: memberid } }),
+            encrypt: false,
+        })
     }
 
 }

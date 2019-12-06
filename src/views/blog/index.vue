@@ -15,17 +15,18 @@
 
     <!-- 评论 -->
     <div class="articleLike"
+         v-if="IsOrNotPraise"
          @click="goPraise()">
-      <div class="likeTitle">喜欢</div>
+      <div class="likeTitle"><i class="iconFont">&#xe64c;</i> Start</div>
       <div class="likeCount">{{blogInfo.Start}}</div>
     </div>
-
-    <!-- 上下篇文章 -->
-    <!-- <div class="prenext">
-      <div class="prev">上一篇：<span class="prevTitle">docker + rancher + jenkins 实现集成测试和自动部署(CI/CD)
-        </span></div>
-      <div class="next">下一篇：<span class="nextTitle">docker 实践杂记</span></div>
-    </div> -->
+    <div v-else
+         class="articleLikeStart"
+         @click="goPraise()">
+      <div class="likeTitle"><i class="iconFont">&#xe64c;</i> Start</div>
+      <div class="likeCount">{{blogInfo.Start}}</div>
+    </div>
+    <!-- 上下篇 -->
     <div class="prenext">
       <div class="prev"
            @click="goPrenext(preBlog.BlogNum)"
@@ -35,6 +36,19 @@
            @click="goPrenext(nextBlog.BlogNum)"
            v-if="nextBlog">下一篇：<span class="nextTitle">{{nextBlog.Title}}</span></div>
     </div>
+    <!-- 评论区 -->
+    <!-- <div class="commentArea">
+      <div class="commentTop">
+        <div>4条评论</div>
+        <div>添加评论</div>
+      </div>
+
+      <div class="commentMiddle">
+
+      </div>
+
+      <CommentArea commentData="123123123"></CommentArea>
+    </div> -->
 
   </div>
 </template>
@@ -42,39 +56,6 @@
 <style lang="less" scoped>
 .container {
   width: 100%;
-
-  h1 {
-    font-size: 36px;
-  }
-  h2 {
-    font-size: 30px;
-  }
-  h3 {
-    font-size: 24px;
-  }
-  h4 {
-    font-size: 18px;
-  }
-  h5 {
-    font-size: 14px;
-  }
-  h6 {
-    font-size: 12px;
-  }
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: inherit;
-    font-weight: 500;
-    line-height: 1.1;
-    color: inherit;
-  }
-  p {
-    margin: 0 0 10px;
-  }
 
   .blogTitle {
     word-break: break-all;
@@ -97,6 +78,49 @@
     word-break: normal;
     margin-bottom: 20px;
     border: 1px solid rgba(0, 0, 0, 0.15);
+  }
+
+  .articleLikeStart {
+    margin-top: 50px;
+    margin-bottom: 40px;
+    width: 160px;
+    height: 50px;
+    position: relative;
+    color: white;
+    background-color: #e78170;
+
+    border: 1px solid #e78170;
+    -moz-border-radius: 40px;
+    -webkit-border-radius: 40px;
+    border-radius: 40px;
+    font-size: 18px;
+    text-align: center;
+    line-height: 50px;
+    overflow: hidden;
+    -moz-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+
+    .likeTitle {
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      width: 70%;
+      line-height: 50px;
+      vertical-align: middle;
+      padding-right: 10px;
+    }
+
+    .likeCount {
+      display: inline-block;
+      position: absolute;
+      right: 0;
+      width: 30%;
+      line-height: 50px;
+      vertical-align: middle;
+      border-left: 1px solid;
+    }
   }
 
   .articleLike {
@@ -171,6 +195,21 @@
       text-overflow: ellipsis;
     }
   }
+
+  .commentArea {
+    .commentTop {
+      font-size: 12px;
+      color: #999;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      height: 70px;
+      align-items: center;
+      border-top: 1px solid #d9d9d9;
+      border-bottom: 1px solid #d9d9d9;
+      margin-bottom: 20px;
+    }
+  }
 }
 </style>
 
@@ -178,6 +217,9 @@
 <script>
 
 import blog from '@/api/blog.js';
+import { Message } from 'element-ui';
+import { getMemberid } from '@/utils/core.js';
+// import CommentArea from '@/components/CommentArea.vue';
 
 export default {
   name: 'blog',
@@ -188,8 +230,12 @@ export default {
       blogInfo: {},
       preBlog: null,
       nextBlog: null,
+      IsOrNotPraise: false,//当前账户是否点赞
     }
 
+  },
+  components: {
+    // CommentArea
   },
   created () {
     const params = this.$route.query;
@@ -200,6 +246,8 @@ export default {
     info.Num = this.blogNum;
     this.getBlogDetails(info);
     this.getPrenext();
+    //查询是否点赞
+    this.getIsOrPraise();
   },
   mounted () {
 
@@ -211,13 +259,15 @@ export default {
       blog.getItemBlog(obj).then((res) => {
         window.console.log(res);
         window.console.log(res.Data.Content);
-        if (res.Code == 0) {
-          var content = decodeURI(res.Data.Content);
-          window.console.log(content);
-          res.Data.Content = content;
-          this.blogInfo = res.Data;
-          window.console.log(this.blogInfo)
-        }
+
+        var content = decodeURI(res.Data.Content);
+        window.console.log(content);
+        res.Data.Content = content;
+        this.blogInfo = res.Data;
+        window.console.log(this.blogInfo)
+
+      }).catch(() => {
+        Message.warning({ message: "系统错误" })
       });
 
     },
@@ -230,14 +280,16 @@ export default {
         window.console.log(res.Data);
         this.preBlog = null;
         this.nextBlog = null;
-        if (res.Code == 0 && res.Data != null) {
-          if (res.Data.PreBlog != null) {
-            this.preBlog = res.Data.PreBlog
-          }
-          if (res.Data.NextBlog != null) {
-            this.nextBlog = res.Data.NextBlog
-          }
+
+        if (res.Data.PreBlog != null) {
+          this.preBlog = res.Data.PreBlog;
         }
+        if (res.Data.NextBlog != null) {
+          this.nextBlog = res.Data.NextBlog;
+        }
+
+      }).catch(() => {
+
       });
     },
     //点击上下篇链接
@@ -251,12 +303,32 @@ export default {
     //点赞
     goPraise () {
       var token = localStorage.getItem('token');
-      if (token == '' || token.length == 0 || token == undefined) {
-        window.location.href = ""
+      window.console.log(token);
+      if (token == undefined || token == '' || token.length == 0) {
+        var url = window.location.href;
+        localStorage.setItem('redirurl', url);
+        this.$router.push('/login');
+        return;
       }
 
       blog.addPraise(token, this.blogNum).then((res) => {
         window.console.log(res);
+      }).catch((err) => {
+        {
+          window.console.log(err);
+        }
+      })
+    },
+    //获取当前登录者是否点赞
+    getIsOrPraise () {
+      var memid = getMemberid();
+      window.console.log(memid);
+      if (memid == 0) {
+        return;
+      }
+      blog.isOrNotPraise(memid, this.blogNum).then((res) => {
+        window.console.log(res);
+        this.isOrNotPraise = res.Data;
       }).catch((err) => {
         {
           window.console.log(err);

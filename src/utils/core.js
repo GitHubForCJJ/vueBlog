@@ -234,3 +234,30 @@ export function closeLoad () {
   const $load = document.querySelector('.app-wait');
   $load.style.display = 'none';
 }
+// 获取会员id
+export function getMemberid () {
+  var meminfo = localStorage.getItem('memberinfo');
+  if (meminfo == undefined || meminfo.length == 0) {
+    return 0;
+  }
+  var member = JSON.parse(meminfo);
+  return member.KID;
+}
+// 获取token
+export function getToken () {
+  var token = localStorage.getItem('token');
+  if (token == undefined || token.length == 0) {
+    return '';
+  }
+
+  return token;
+}
+//是否登录
+export function isLogin () {
+  var token = localStorage.getItem('token');
+  if (token == undefined || token.length != 64) {
+    return false;
+  }
+
+  return true;
+}

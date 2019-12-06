@@ -50,6 +50,11 @@
         </el-col>
 
       </el-form-item>
+      <el-form-item label="昵称">
+        <el-col :span="11">
+          <el-input v-model="UserName"></el-input>
+        </el-col>
+      </el-form-item>
       <el-form-item label="新密码">
         <el-col :span="11">
           <el-input type="password"
@@ -127,7 +132,8 @@ export default {
         UserAccount: '',
         UserPassword: '',
         Qrcode: '',
-        QrcodeKey: ''
+        QrcodeKey: '',
+        UserName: '',//昵称
       },
       resetForm: {
         UserAccount: '',

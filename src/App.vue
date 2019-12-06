@@ -8,12 +8,23 @@
           </div>
         </div>
         <div class="bottom">
-          <div class="item"> <i class="iconFont">&#xe699;</i></div>
+          <!-- <div class="item"> <i class="iconFont">&#xe699;</i></div> -->
           <!-- <div class="item"> <i class="iconFont">&#xe69a;</i></div> -->
           <!-- <div class="item"> <i class="iconFont login">&#xe501;</i></div> -->
-          <div class="item">
-            <router-link :to="{name:'login'}"><a href="javascript:"> <i class="iconFont">&#xe501;</i></a></router-link>
+
+          <div class="item"
+               v-if="IsLogin"
+               @click="goOut()">
+            <a href="javascript:"
+               title="退出"> <i class="iconFont"
+                 style="color:#d96f5d;">&#xe501;</i></a>
           </div>
+          <div class="item"
+               v-else>
+            <router-link :to="{name:'login'}"><a href="javascript:"
+                 title='登录'> <i class="iconFont">&#xe501;</i></a></router-link>
+          </div>
+
           <div class="item"> <a target="_blank"
                href="https://github.com/GitHubForCJJ/vueBlog"><i class="iconFont git">&#xe606;</i></a></div>
 
@@ -53,35 +64,32 @@
 </template>
 
 <script>
-
+import { isLogin } from '@/utils/core.js';
 export default {
   name: 'app',
   data: function () {
     return {
-
+      IsLogin: false
 
     };
   },
   components: {
 
   },
+  created () {
+
+    this.IsLogin = isLogin();
+  },
+
   mounted () {
     // window.addEventListener('scroll', this.handleScroll, true);
   },
   methods: {
-    handleScroll (e) {
-
-      var scTop = e.target.scrollTop;
-      if (scTop > 100) {
-        this.showBackTop = true;
-      }
-      else {
-        this.showBackTop = false;
-      }
-
-    },
-    backTop () {
-
+    goOut () {
+      // localStorage.removeItem('token');
+      // localStorage.removeItem('memberinfo');
+      this.isLogin = false;
+      window.console.log(this.isLogin)
     }
 
   },
