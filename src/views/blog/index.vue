@@ -71,13 +71,17 @@
     padding-bottom: 10px;
   }
 
-  pre {
-    background-color: #fae5e2;
-    color: #d96f5d;
-    word-wrap: normal;
-    word-break: normal;
-    margin-bottom: 20px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+  .blogContent {
+    overflow-x: scroll;
+
+    pre {
+      background-color: #fae5e2;
+      color: #d96f5d;
+      word-wrap: normal;
+      word-break: normal;
+      margin-bottom: 20px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
   }
 
   .articleLikeStart {
