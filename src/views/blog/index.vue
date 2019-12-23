@@ -36,19 +36,9 @@
            @click="goPrenext(nextBlog.BlogNum)"
            v-if="nextBlog">下一篇：<span class="nextTitle">{{nextBlog.Title}}</span></div>
     </div>
+
     <!-- 评论区 -->
-    <!-- <div class="commentArea">
-      <div class="commentTop">
-        <div>4条评论</div>
-        <div>添加评论</div>
-      </div>
-
-      <div class="commentMiddle">
-
-      </div>
-
-      <CommentArea commentData="123123123"></CommentArea>
-    </div> -->
+    <Comment commentData="傻子"></Comment>
 
   </div>
 </template>
@@ -72,7 +62,7 @@
   }
 
   .blogContent {
-    overflow-x: scroll;
+    overflow-x: auto;
 
     pre {
       background-color: #fae5e2;
@@ -199,21 +189,6 @@
       text-overflow: ellipsis;
     }
   }
-
-  .commentArea {
-    .commentTop {
-      font-size: 12px;
-      color: #999;
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      height: 70px;
-      align-items: center;
-      border-top: 1px solid #d9d9d9;
-      border-bottom: 1px solid #d9d9d9;
-      margin-bottom: 20px;
-    }
-  }
 }
 </style>
 
@@ -224,6 +199,7 @@ import blog from '@/api/blog.js';
 import { Message } from 'element-ui';
 import { getMemberid } from '@/utils/core.js';
 // import CommentArea from '@/components/CommentArea.vue';
+import Comment from '../blog/comment';
 
 export default {
   name: 'blog',
@@ -239,7 +215,7 @@ export default {
 
   },
   components: {
-    // CommentArea
+    Comment
   },
   created () {
     const params = this.$route.query;
