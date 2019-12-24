@@ -38,10 +38,149 @@
     </div>
 
     <!-- 评论区 -->
-    <Comment commentData="傻子"></Comment>
+    <Comment commentData="傻子"
+             :user='true'></Comment>
 
   </div>
 </template>
+
+<script>
+
+import blog from '@/api/blog.js';
+import { Message } from 'element-ui';
+import { getMemberid } from '@/utils/core.js';
+// import CommentArea from '@/components/CommentArea.vue';
+import Comment from '../blog/comment';
+
+export default {
+  name: 'blog',
+  data () {
+    return {
+      blogNum: '',//博客编号
+      blogType: 0,
+      blogInfo: {},
+      preBlog: null,
+      nextBlog: null,
+      IsOrNotPraise: false,//当前账户是否点赞
+      commentList: null
+
+    }
+
+  },
+  components: {
+    Comment
+  },
+  created () {
+    const params = this.$route.query;
+    this.blogNum = params.a;
+    this.blogType = params.t;
+    window.console.log(params.blogNum);
+    var info = {};
+    info.Num = this.blogNum;
+    this.getBlogDetails(info);
+    this.getPrenext();
+    //查询是否点赞
+    this.getIsOrPraise();
+    //查询评论
+    this.getComments();
+  },
+  mounted () {
+
+  },
+  methods: {
+    //获取详情
+    getBlogDetails (obj) {
+      //var id = this.id;
+      blog.getItemBlog(obj).then((res) => {
+        window.console.log(res);
+        window.console.log(res.Data.Content);
+
+        var content = decodeURI(res.Data.Content);
+        window.console.log(content);
+        res.Data.Content = content;
+        this.blogInfo = res.Data;
+        window.console.log(this.blogInfo)
+
+      }).catch(() => {
+        Message.warning({ message: "系统错误" })
+      });
+
+    },
+    //获取上一下篇
+    getPrenext () {
+      var obj = {};
+      obj.BlogNum = this.blogNum;
+      obj.BlogType = this.blogType;
+      blog.getPrenext(obj).then((res) => {
+        window.console.log(res.Data);
+        this.preBlog = null;
+        this.nextBlog = null;
+
+        if (res.Data.PreBlog != null) {
+          this.preBlog = res.Data.PreBlog;
+        }
+        if (res.Data.NextBlog != null) {
+          this.nextBlog = res.Data.NextBlog;
+        }
+
+      }).catch(() => {
+
+      });
+    },
+    //点击上下篇链接
+    goPrenext (blogNum) {
+      var obj = {};
+      obj.Num = blogNum;
+      this.getBlogDetails(obj);
+      this.blogNum = blogNum;
+      this.getPrenext();
+    },
+    //点赞
+    goPraise () {
+      var token = localStorage.getItem('token');
+      window.console.log(token);
+      if (token == undefined || token == '' || token.length == 0) {
+        var url = window.location.href;
+        localStorage.setItem('redirurl', url);
+        this.$router.push('/login');
+        return;
+      }
+
+      blog.addPraise(token, this.blogNum).then((res) => {
+        window.console.log(res);
+      }).catch((err) => {
+        {
+          window.console.log(err);
+        }
+      })
+    },
+    //获取当前登录者是否点赞
+    getIsOrPraise () {
+      var memid = getMemberid();
+      window.console.log(memid);
+      if (memid == 0) {
+        return;
+      }
+      blog.isOrNotPraise(memid, this.blogNum).then((res) => {
+        window.console.log(res);
+        this.isOrNotPraise = res.Data;
+      }).catch((err) => {
+        {
+          window.console.log(err);
+        }
+      })
+    },
+    //获取评论列表
+    getComments () {
+      blog.getComments(this.blogNum).then((res) => {
+        window.console.log(res)
+        this.commentList = res.Data;
+      }).catch()
+    }
+  }
+}
+</script>
+
 
 <style lang="less" scoped>
 .container {
@@ -191,132 +330,5 @@
   }
 }
 </style>
-
-
-<script>
-
-import blog from '@/api/blog.js';
-import { Message } from 'element-ui';
-import { getMemberid } from '@/utils/core.js';
-// import CommentArea from '@/components/CommentArea.vue';
-import Comment from '../blog/comment';
-
-export default {
-  name: 'blog',
-  data () {
-    return {
-      blogNum: '',//博客编号
-      blogType: 0,
-      blogInfo: {},
-      preBlog: null,
-      nextBlog: null,
-      IsOrNotPraise: false,//当前账户是否点赞
-    }
-
-  },
-  components: {
-    Comment
-  },
-  created () {
-    const params = this.$route.query;
-    this.blogNum = params.a;
-    this.blogType = params.t;
-    window.console.log(params.blogNum);
-    var info = {};
-    info.Num = this.blogNum;
-    this.getBlogDetails(info);
-    this.getPrenext();
-    //查询是否点赞
-    this.getIsOrPraise();
-  },
-  mounted () {
-
-  },
-  methods: {
-    //获取详情
-    getBlogDetails (obj) {
-      //var id = this.id;
-      blog.getItemBlog(obj).then((res) => {
-        window.console.log(res);
-        window.console.log(res.Data.Content);
-
-        var content = decodeURI(res.Data.Content);
-        window.console.log(content);
-        res.Data.Content = content;
-        this.blogInfo = res.Data;
-        window.console.log(this.blogInfo)
-
-      }).catch(() => {
-        Message.warning({ message: "系统错误" })
-      });
-
-    },
-    //获取上一下篇
-    getPrenext () {
-      var obj = {};
-      obj.BlogNum = this.blogNum;
-      obj.BlogType = this.blogType;
-      blog.getPrenext(obj).then((res) => {
-        window.console.log(res.Data);
-        this.preBlog = null;
-        this.nextBlog = null;
-
-        if (res.Data.PreBlog != null) {
-          this.preBlog = res.Data.PreBlog;
-        }
-        if (res.Data.NextBlog != null) {
-          this.nextBlog = res.Data.NextBlog;
-        }
-
-      }).catch(() => {
-
-      });
-    },
-    //点击上下篇链接
-    goPrenext (blogNum) {
-      var obj = {};
-      obj.Num = blogNum;
-      this.getBlogDetails(obj);
-      this.blogNum = blogNum;
-      this.getPrenext();
-    },
-    //点赞
-    goPraise () {
-      var token = localStorage.getItem('token');
-      window.console.log(token);
-      if (token == undefined || token == '' || token.length == 0) {
-        var url = window.location.href;
-        localStorage.setItem('redirurl', url);
-        this.$router.push('/login');
-        return;
-      }
-
-      blog.addPraise(token, this.blogNum).then((res) => {
-        window.console.log(res);
-      }).catch((err) => {
-        {
-          window.console.log(err);
-        }
-      })
-    },
-    //获取当前登录者是否点赞
-    getIsOrPraise () {
-      var memid = getMemberid();
-      window.console.log(memid);
-      if (memid == 0) {
-        return;
-      }
-      blog.isOrNotPraise(memid, this.blogNum).then((res) => {
-        window.console.log(res);
-        this.isOrNotPraise = res.Data;
-      }).catch((err) => {
-        {
-          window.console.log(err);
-        }
-      })
-    }
-  }
-}
-</script>
 
 

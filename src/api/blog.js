@@ -9,6 +9,17 @@
 import axios from '@/utils/request';
 
 const blog = {
+
+    //获取评论列表
+    getComments (blogNum) {
+        var obj = {};
+        obj.num = blogNum;
+        return axios({
+            url: '/Comment/GetBlogComments',
+            data: JSON.stringify(obj),
+            encrypt: false,
+        });
+    },
     // 获取会员的消息
     getListBlog (type, page, limit) {
         return axios({
