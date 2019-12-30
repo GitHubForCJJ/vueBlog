@@ -38,7 +38,7 @@
     </div>
 
     <!-- 评论区 -->
-    <Comment commentData="傻子"
+    <Comment :blogNumTran="blogNum"
              :user='true'></Comment>
 
   </div>
@@ -62,7 +62,6 @@ export default {
       preBlog: null,
       nextBlog: null,
       IsOrNotPraise: false,//当前账户是否点赞
-      commentList: null
 
     }
 
@@ -74,15 +73,12 @@ export default {
     const params = this.$route.query;
     this.blogNum = params.a;
     this.blogType = params.t;
-    window.console.log(params.blogNum);
     var info = {};
     info.Num = this.blogNum;
     this.getBlogDetails(info);
     this.getPrenext();
     //查询是否点赞
     this.getIsOrPraise();
-    //查询评论
-    this.getComments();
   },
   mounted () {
 
@@ -92,14 +88,10 @@ export default {
     getBlogDetails (obj) {
       //var id = this.id;
       blog.getItemBlog(obj).then((res) => {
-        window.console.log(res);
-        window.console.log(res.Data.Content);
 
         var content = decodeURI(res.Data.Content);
-        window.console.log(content);
         res.Data.Content = content;
         this.blogInfo = res.Data;
-        window.console.log(this.blogInfo)
 
       }).catch(() => {
         Message.warning({ message: "系统错误" })
@@ -170,13 +162,6 @@ export default {
         }
       })
     },
-    //获取评论列表
-    getComments () {
-      blog.getComments(this.blogNum).then((res) => {
-        window.console.log(res)
-        this.commentList = res.Data;
-      }).catch()
-    }
   }
 }
 </script>

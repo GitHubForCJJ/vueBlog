@@ -73,7 +73,6 @@ const request = ({
     data = qs.stringify(data);
     headers = 'application/x-www-form-urlencoded';
   }
-  window.console.log(data);
 
   return axios({
     url,

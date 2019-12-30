@@ -1,28 +1,45 @@
 <template>
   <div class="container">
     <div class="commentTop">
-      <div>4条评论</div>
+      <div> {{ commentList.length || 0 }}条评论</div>
       <div>添加评论</div>
     </div>
 
     <div class="commentList">
-      <div class="commentItme">
+      <div class="commentItme"
+           v-for="(item,index) in commentList"
+           :key="index">
         <div class="itemTop">
-          <img :src="defaultAvatar"
+          <img :src="item.Avatar || defaultAvatar"
                alt="头像">
           <div>
-            <div class="name">Rodman</div>
-            <div class="time">2019-02-03 03:12:23</div>
+            <div class="name">{{item.MemberName}}</div>
+            <div class="time">{{item.CreateTime}}</div>
           </div>
         </div>
-        <p class="itemContent">你是傻子！！！ <a href="#">回复</a></p>
+        <p class="itemContent"><a href="#"
+             @click="showReply(index,item.MemberName)">回复</a></p>
         <div class="itemReplayList">
-          <Reply :replyList='commentList'
-                 :user="true"></Reply>
+          <Reply :replyList='item.Replys'
+                 :user="true"
+                 :parentIndex="index"></Reply>
+          <!-- 子回复 -->
+          <form class="hide"
+                v-bind:id="'replyForm'+index">
+            <textarea name=""
+                      v-bind:id="'replyContent' +index"
+                      maxlength="500"
+                      cols="30"
+                      rows="10"></textarea>
+            <div>
+              <el-button type="primary"
+                         @click.prevent="submitReply(index,item.Memberid)">发表</el-button>
+            </div>
+          </form>
         </div>
       </div>
 
-      <div class="commentItme">
+      <!-- <div class="commentItme">
         <div class="itemTop">
           <img :src="defaultAvatar"
                alt="头像">
@@ -35,16 +52,17 @@
         <div class="itemReplayList">
           <Reply :replyList='commentList'
                  :user="true"></Reply>
+          <form action=""></form>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <!-- 写新评论 -->
     <div v-if="user"
          class="bottom">
-      <textarea v-model="commentData"
-                name=""
+      <textarea name=""
                 id=""
+                maxlength="500"
                 cols="30"
                 rows="10"></textarea>
       <div>
@@ -58,21 +76,57 @@
 </template>
 
 <script>
-import Reply from '../blog/reply'
-import DefaultAvatar from '../../assets/logo.png'
+
+import blog from '@/api/blog.js';
+import Reply from '../blog/reply';
+import DefaultAvatar from '../../assets/logo.png';
 
 export default {
   name: 'Comment',
-  props: ['commentList', 'user'],
+  props: ['user', "blogNumTran"],
   components: { Reply },
   data () {
     return {
-      commentData: '',
+      blogNum: "",
+      commentList: [],
       defaultAvatar: DefaultAvatar
     }
   },
+  created () {
+    this.blogNum = this.blogNumTran;
+    this.getComments();
+  },
   methods: {
+    //获取评论列表
+    getComments () {
+      blog.getComments(this.blogNum).then((res) => {
+        window.console.log(res)
+        for (var i in res.Data) {
+          this.commentList.push(res.Data[i])
+        }
+      }).catch()
+    },
+    //展示回复框
+    showReply (index, nickname) {
+      window.console.log("父", index, nickname);
+      const form = document.getElementById('replyForm' + index);
+      const formTextArea = form.getElementsByTagName('textarea')[0]
+      if (form.className.indexOf('hide') > -1) {
+        form.className = ' '
+        formTextArea.focus()
+        formTextArea.value = '@' + nickname + ' '
+      } else {
+        form.className += ' hide';
+      }
 
+    },
+    //当前用户给别人评论，tomemid=0为自己写的评论
+    submitReply (index, tomemid) {
+      //const form = document.getElementById('replyForm' + index);
+      const formTextArea = document.getElementById('replyContent' + index);
+
+      window.console.log(formTextArea.value, tomemid);
+    }
 
   },
 };
@@ -84,6 +138,10 @@ export default {
   width: 100%;
   height: auto;
   color: #555;
+
+  .hide {
+    display: none;
+  }
 
   .commentTop {
     font-size: 12px;
@@ -100,7 +158,7 @@ export default {
 
   .commentList {
     width: 100%;
-    min-height: 300px;
+
     box-sizing: border-box;
 
     a {
@@ -142,6 +200,12 @@ export default {
         line-height: 1.5;
         margin-bottom: 30px;
       }
+      .itemReplayList form {
+        margin-top: 25px;
+        padding: 10px;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+      }
     }
   }
 
@@ -165,6 +229,7 @@ export default {
     box-shadow: none;
     font: inherit;
     color: inherit;
+    font-size: 14px;
   }
 }
 </style>

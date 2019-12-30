@@ -1,20 +1,23 @@
 <template>
   <div class="container">
     <div class="replyList">
-      <div class="replyItem">
+      <div class="replyItem"
+           v-for="(reply,index) in replyList"
+           :key="index">
         <p class="content">
-          <span class="">carson:</span>
-          你说小不点可以哦
+          <span class="">{{reply.MemberName}}:</span>
+          {{reply.Content}}
         </p>
-        <div class="time">2019-01-01 03:03:23 <a href="#">回复</a></div>
+        <div class="time"> {{reply.CreateTime}} <a href="#"
+             @click="showReply(parentIndex,reply.MemberName)">回复</a></div>
       </div>
-      <div class="replyItem">
+      <!-- <div class="replyItem">
         <p class="content">
           <span class="">rodman:</span>
           不行不信
         </p>
         <div class="time">2019-01-01 03:03:23 <a href="#">回复</a></div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -23,13 +26,16 @@
 
 export default {
   name: 'Reply',
-  props: ['replyList', 'user'],
+  props: ['replyList', 'user', 'parentIndex'],
   data () {
     return {
     }
   },
   methods: {
-
+    showReply (index, nickname) {
+      window.console.log("子", index, nickname);
+      this.$parent.showReply(index, nickname);
+    }
 
   },
 };
