@@ -9,7 +9,7 @@
           {{reply.Content}}
         </p>
         <div class="time"> {{reply.CreateTime}} <a href="#"
-             @click="showReply(parentIndex,reply.MemberName)">回复</a></div>
+             @click="showReply(parentIndex,reply.MemberName,reply.Memberid)">回复</a></div>
       </div>
       <!-- <div class="replyItem">
         <p class="content">
@@ -32,9 +32,9 @@ export default {
     }
   },
   methods: {
-    showReply (index, nickname) {
+    showReply (index, nickname, tomemberid) {
       window.console.log("子", index, nickname);
-      this.$parent.showReply(index, nickname);
+      this.$parent.showReply(index, nickname, tomemberid);
     }
 
   },

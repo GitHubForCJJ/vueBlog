@@ -17,10 +17,11 @@
             <div class="time">{{item.CreateTime}}</div>
           </div>
         </div>
-        <p class="itemContent"><a href="#"
-             @click="showReply(index,item.MemberName)">回复</a></p>
+        <p class="itemContent">{{item.Content}}<a href="#"
+             @click="showReply(index,item.MemberName,item.Memberid)">回复</a></p>
         <div class="itemReplayList">
-          <Reply :replyList='item.Replys'
+          <Reply v-if="item.Replys.length>0"
+                 :replyList='item.Replys'
                  :user="true"
                  :parentIndex="index"></Reply>
           <!-- 子回复 -->
@@ -33,7 +34,7 @@
                       rows="10"></textarea>
             <div>
               <el-button type="primary"
-                         @click.prevent="submitReply(index,item.Memberid)">发表</el-button>
+                         @click.prevent="submitReply(index,item.Commentid,item.Memberid)">发表</el-button>
             </div>
           </form>
         </div>
@@ -61,13 +62,14 @@
     <div v-if="user"
          class="bottom">
       <textarea name=""
-                id=""
+                id="newcommenttextarea"
                 maxlength="500"
                 cols="30"
-                rows="10"></textarea>
+                rows="10"
+                placeholder="留下你的足迹.."></textarea>
       <div>
         <el-button type="primary"
-                   @click.prevent="">发表</el-button>
+                   @click.prevent="submitReply(0,'',0)">发表</el-button>
       </div>
     </div>
     <div v-else
@@ -80,6 +82,7 @@
 import blog from '@/api/blog.js';
 import Reply from '../blog/reply';
 import DefaultAvatar from '../../assets/logo.png';
+import { getToken, getMember } from '@/utils/core.js';
 
 export default {
   name: 'Comment',
@@ -89,7 +92,8 @@ export default {
     return {
       blogNum: "",
       commentList: [],
-      defaultAvatar: DefaultAvatar
+      defaultAvatar: DefaultAvatar,
+      toMemberid: 0,//存储评论别人时  别人的id
     }
   },
   created () {
@@ -107,26 +111,72 @@ export default {
       }).catch()
     },
     //展示回复框
-    showReply (index, nickname) {
-      window.console.log("父", index, nickname);
+    showReply (index, nickname, tomemberid) {
+      window.console.log("父", index, nickname, tomemberid);
       const form = document.getElementById('replyForm' + index);
       const formTextArea = form.getElementsByTagName('textarea')[0]
       if (form.className.indexOf('hide') > -1) {
         form.className = ' '
-        formTextArea.focus()
-        formTextArea.value = '@' + nickname + ' '
+        formTextArea.focus();
+        formTextArea.value = '@' + nickname + ' ';
+        this.toMemberid = tomemberid;
       } else {
         form.className += ' hide';
+        this.toMemberid = 0;
       }
 
     },
     //当前用户给别人评论，tomemid=0为自己写的评论
-    submitReply (index, tomemid) {
-      //const form = document.getElementById('replyForm' + index);
-      const formTextArea = document.getElementById('replyContent' + index);
+    submitReply (index, sessionid) {
+      if (sessionid == '') {
 
-      window.console.log(formTextArea.value, tomemid);
-    }
+        var newcommenttext = document.getElementById('newcommenttextarea').value;
+        this.addComment(newcommenttext, '')
+      }
+      else {
+        const form = document.getElementById('replyForm' + index);
+        const formTextArea = document.getElementById('replyContent' + index);
+        this.addComment(formTextArea.value, sessionid);
+        formTextArea.value = '';
+        form.className += ' hide';
+      }
+
+    },
+    addComment (content, commentid) {
+      var obj = {};
+      obj.BlogNum = this.blogNum;
+      obj.ToMemberid = this.toMemberid;
+      obj.Token = getToken();
+      obj.Content = content;
+      obj.Commentid = commentid;
+      blog.addComment(obj).then((res) => {
+        window.console.log(res);
+        var memberid = getMember();
+        obj.Commentid = res.Data;//添加评论后我的解决方案是在当前的list中插入对应的对象  添加成功后返回会话id给我
+        obj.Memberid = memberid.KID;
+        obj.MemberName = memberid.UserName
+        var day = new Date()
+        obj.CreateTime = day.toLocaleDateString();
+        var list = this.commentList;
+        window.console.log('12331231');
+        if (commentid == '' || commentid == undefined) {
+          //新会话
+          window.console.log('新会话');
+          this.commentList.push(obj);
+        }
+        else {
+          for (var i in list) {
+            if (list[i].Commentid == commentid) {
+              list[i].Replys.push(obj);
+            }
+          }
+        }
+
+        window.console.log(memberid);
+
+      }).catch()
+    },
+
 
   },
 };
@@ -171,6 +221,7 @@ export default {
       margin-top: 20px;
       padding-bottom: 30px;
       border-bottom: 1px solid #d9d9d9;
+      font-size: 14px;
 
       .itemTop {
         padding-top: 10px;
@@ -196,9 +247,8 @@ export default {
       .itemContent {
         word-break: break-all;
         word-wrap: break-word;
-        font-size: 16px;
         line-height: 1.5;
-        margin-bottom: 30px;
+        //margin-bottom: 30px;
       }
       .itemReplayList form {
         margin-top: 25px;

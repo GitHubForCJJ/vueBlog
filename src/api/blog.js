@@ -20,6 +20,14 @@ const blog = {
             encrypt: false,
         });
     },
+    //添加评论
+    addComment (obj) {
+        return axios({
+            url: '/Comment/AddItem',
+            data: JSON.stringify(obj),
+            encrypt: false,
+        });
+    },
     // 获取会员的消息
     getListBlog (type, page, limit) {
         return axios({

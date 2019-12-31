@@ -52,13 +52,13 @@
       </el-form-item>
       <el-form-item label="昵称">
         <el-col :span="11">
-          <el-input v-model="UserName"></el-input>
+          <el-input v-model="registForm.UserName"></el-input>
         </el-col>
       </el-form-item>
       <el-form-item label="新密码">
         <el-col :span="11">
           <el-input type="password"
-                    v-model="Password"></el-input>
+                    v-model="registForm.Password"></el-input>
         </el-col>
       </el-form-item>
       <el-form-item>
@@ -93,7 +93,7 @@
       </el-form-item>
       <el-form-item label="新密码">
         <el-col :span="11">
-          <el-input v-model="Password"></el-input>
+          <el-input v-model="resetForm.Password"></el-input>
         </el-col>
       </el-form-item>
       <el-form-item>
@@ -157,7 +157,7 @@ export default {
         Message.warning({ message: '请输入正确的邮箱地址' });
         return;
       }
-      if (this.Password == '' || this.Password.length == 0) {
+      if (this.loginForm.UserPassword == '' || this.loginForm.UserPassword.length == 0) {
         Message.warning({ message: '请输入密码' });
         return;
       }
@@ -166,7 +166,7 @@ export default {
 
       member.memberLogin(this.loginForm).then((res) => {
 
-        Message.info({ message: '登录成功' });
+        // Message.info({ message: '登录成功' });
         window.console.log(res)
         localStorage.setItem('token', res.Data.Token);
         localStorage.setItem('memberinfo', JSON.stringify(res.Data.MemberInfo));
@@ -195,7 +195,7 @@ export default {
         Message.warning({ message: '请输入验证码' });
         return;
       }
-      if (this.Password == '' || this.Password.length == 0) {
+      if (this.registForm.Password == '' || this.registForm.Password.length == 0) {
         Message.warning({ message: '请输入密码' });
         return;
       }
@@ -204,8 +204,12 @@ export default {
 
       member.registItemMember(this.registForm).then(() => {
 
-        Message.info({ message: '注册成功' });
-        this.linkToModel(0);
+        Message.info({ message: '注册成功 自动登录' });
+        this.loginForm.UserAccount = this.registForm.UserAccount;
+        this.loginForm.UserPassword = this.registForm.UserPassword;
+        //注册成功自动登录
+        this.goLogin();
+        // this.linkToModel(0);
 
       }).catch(() => {
         Message.info({ message: '注册失败请重试' });
