@@ -11,7 +11,8 @@
 
       <el-form-item label="密码">
         <el-col :span="11">
-          <el-input v-model="Password"></el-input>
+          <el-input type="password"
+                    v-model="loginForm.Password"></el-input>
         </el-col>
       </el-form-item>
       <el-form-item>
@@ -46,7 +47,7 @@
         <el-col :span="3">
           <el-button type="primary"
                      style="width: 100%;"
-                     @click="getQrcode(1)">获取验证码</el-button>
+                     @click="getQrcode(1)">验证码</el-button>
         </el-col>
 
       </el-form-item>
@@ -87,17 +88,19 @@
         <el-col :span="3">
           <el-button type="primary"
                      style="width: 100%;"
-                     @click="getQrcode(2)">获取验证码</el-button>
+                     @click="getQrcode(2)">验证码</el-button>
         </el-col>
 
       </el-form-item>
       <el-form-item label="新密码">
         <el-col :span="11">
-          <el-input v-model="resetForm.Password"></el-input>
+          <el-input type="password"
+                    v-model="resetForm.Password"></el-input>
         </el-col>
       </el-form-item>
       <el-form-item>
-        <el-button type="success">修改</el-button>
+        <el-button type="success"
+                   @click="goReset">修改</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
     </el-form>
@@ -123,14 +126,16 @@ export default {
     return {
       //控制登录  注册  修改密码显示
       showType: 0,
-      Password: '',
+      transPsw: '',
       loginForm: {
         UserAccount: '',
         UserPassword: '',
+        Password: ''
       },
       registForm: {
         UserAccount: '',
         UserPassword: '',
+        Password: '',
         Qrcode: '',
         QrcodeKey: '',
         UserName: '',//昵称
@@ -138,9 +143,11 @@ export default {
       resetForm: {
         UserAccount: '',
         UserPassword: '',
+        Password: '',
         Qrcode: '',
         QrcodeKey: ''
-      }
+      },
+
     }
 
   },
@@ -152,21 +159,24 @@ export default {
   },
   methods: {
     goLogin () {
-
+      window.console.log(this.loginForm)
       if (this.loginForm.UserAccount == '' || this.loginForm.UserAccount.length == 0 || this.loginForm.UserAccount.indexOf('@') < 0) {
+
         Message.warning({ message: '请输入正确的邮箱地址' });
         return;
       }
-      if (this.loginForm.UserPassword == '' || this.loginForm.UserPassword.length == 0) {
+      if (this.loginForm.Password == '' || this.loginForm.Password.length == 0) {
         Message.warning({ message: '请输入密码' });
         return;
       }
-      this.loginForm.UserPassword = md5(this.Password).toUpperCase();
-      window.console.log(this.registForm);
+      this.loginForm.UserPassword = md5(this.loginForm.Password).toUpperCase();
 
-      member.memberLogin(this.loginForm).then((res) => {
+      var fromdata = this.loginForm;
+      fromdata.Password = '';
 
-        // Message.info({ message: '登录成功' });
+      member.memberLogin(fromdata).then((res) => {
+
+        //Message.info({ message: '登录成功' });
         window.console.log(res)
         localStorage.setItem('token', res.Data.Token);
         localStorage.setItem('memberinfo', JSON.stringify(res.Data.MemberInfo));
@@ -185,7 +195,7 @@ export default {
     },
     //注册
     goRegist () {
-
+      window.console.log(this.registForm)
       if (this.registForm.UserAccount == '' || this.registForm.UserAccount.length == 0 || this.registForm.UserAccount.indexOf('@') < 0) {
         Message.warning({ message: '请输入正确的邮箱地址' });
         return;
@@ -199,20 +209,64 @@ export default {
         Message.warning({ message: '请输入密码' });
         return;
       }
-      this.registForm.UserPassword = md5(this.Password).toUpperCase();
+      this.registForm.UserPassword = md5(this.registForm.Password).toUpperCase();
       window.console.log(this.registForm);
+      this.transPsw = this.registForm.Password;
+      var fromdata = this.registForm;
 
-      member.registItemMember(this.registForm).then(() => {
+      member.registItemMember(fromdata).then(() => {
 
         Message.info({ message: '注册成功 自动登录' });
         this.loginForm.UserAccount = this.registForm.UserAccount;
-        this.loginForm.UserPassword = this.registForm.UserPassword;
+        this.loginForm.Password = this.transPsw;
         //注册成功自动登录
+        this.goLogin();
+
+      }).catch((err) => {
+        var msg = '注册失败请重试';
+        if (err.Msg) {
+          msg = err.Msg
+        }
+        Message.info({ message: msg });
+      });
+
+    },
+    //重置密码
+    goReset () {
+
+      if (this.resetForm.UserAccount == '' || this.resetForm.UserAccount.length == 0 || this.resetForm.UserAccount.indexOf('@') < 0) {
+        Message.warning({ message: '请输入正确的邮箱地址' });
+        return;
+      }
+
+      if (this.resetForm.Qrcode == '' || this.resetForm.Qrcode.length == 0) {
+        Message.warning({ message: '请输入验证码' });
+        return;
+      }
+      if (this.resetForm.Password == '' || this.resetForm.Password.length == 0) {
+        Message.warning({ message: '请输入新密码' });
+        return;
+      }
+      this.resetForm.UserPassword = md5(this.resetForm.Password).toUpperCase();
+      window.console.log(this.resetForm);
+      this.transPsw = this.resetForm.Password;
+      var fromdata = this.resetForm;
+
+      member.resetPsw(fromdata).then(() => {
+
+        Message.info({ message: '重置密码成功 自动登录' });
+        this.loginForm.UserAccount = this.resetForm.UserAccount;
+        this.loginForm.Password = this.transPsw;
+        //重置成功自动登录
         this.goLogin();
         // this.linkToModel(0);
 
-      }).catch(() => {
-        Message.info({ message: '注册失败请重试' });
+      }).catch((err) => {
+        var msg = '重置密码失败请重试';
+        if (err.Msg) {
+          msg = err.Msg
+        }
+        Message.info({ message: msg });
       });
 
     },

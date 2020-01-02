@@ -13,7 +13,7 @@
           <!-- <div class="item"> <i class="iconFont login">&#xe501;</i></div> -->
 
           <div class="item"
-               v-if="IsLogin"
+               v-if="isOrNotLogin"
                @click="goOut()">
             <a href="javascript:"
                title="退出"> <i class="iconFont"
@@ -44,7 +44,7 @@
         </div> -->
 
         <el-backtop target=".mainApp"
-                    :bottom="100">
+                    :bottom="24">
           <div style="{
         height: 100%;
         width: 100%;
@@ -69,7 +69,7 @@ export default {
   name: 'app',
   data: function () {
     return {
-      IsLogin: false
+      isOrNotLogin: false
 
     };
   },
@@ -78,7 +78,7 @@ export default {
   },
   created () {
 
-    this.IsLogin = isLogin();
+    this.isOrNotLogin = isLogin();
   },
 
   mounted () {
@@ -86,10 +86,10 @@ export default {
   },
   methods: {
     goOut () {
-      // localStorage.removeItem('token');
-      // localStorage.removeItem('memberinfo');
-      this.isLogin = false;
-      window.console.log(this.isLogin)
+      localStorage.removeItem('token');
+      localStorage.removeItem('memberinfo');
+      this.isOrNotLogin = false;
+      window.console.log(this.isOrNotLogin)
     }
 
   },

@@ -9,10 +9,25 @@
 import axios from '@/utils/request';
 
 const member = {
-    // 获取会员的消息
+    resetPsw (obj) {
+        var up = {};
+        up.Update = obj;
+        if (obj.Password != '' || obj.Password.length > 0) {
+            obj.Password = '';
+        }
+        return axios({
+            url: '/Member/ResetPsw',
+            data: JSON.stringify(up),
+            encrypt: false,
+        });
+    },
+    // 注册
     registItemMember (obj) {
         var up = {};
         up.Update = obj;
+        if (obj.Password != '' || obj.Password.length > 0) {
+            obj.Password = '';
+        }
         return axios({
             url: '/Member/RegistItemMember',
             data: JSON.stringify(up),
@@ -27,6 +42,9 @@ const member = {
         });
     },
     memberLogin (obj) {
+        if (obj.Password != '' || obj.Password.length > 0) {
+            obj.Password = '';
+        }
         return axios({
             url: '/Member/MemberLogin',
             data: JSON.stringify(obj),

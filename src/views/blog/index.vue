@@ -13,15 +13,15 @@
     <div class="blogContent"
          v-html="blogInfo.Content"></div>
 
-    <!-- 评论 -->
-    <div class="articleLike"
-         v-if="IsOrNotPraise"
+    <!-- 点赞 -->
+    <div class="articleLikeStart"
+         v-if="isPraise"
          @click="goPraise()">
       <div class="likeTitle"><i class="iconFont">&#xe64c;</i> Start</div>
       <div class="likeCount">{{blogInfo.Start}}</div>
     </div>
     <div v-else
-         class="articleLikeStart"
+         class="articleLike"
          @click="goPraise()">
       <div class="likeTitle"><i class="iconFont">&#xe64c;</i> Start</div>
       <div class="likeCount">{{blogInfo.Start}}</div>
@@ -38,8 +38,7 @@
     </div>
 
     <!-- 评论区 -->
-    <Comment :blogNumTran="blogNum"
-             :user='true'></Comment>
+    <Comment :blogNumTran="blogNum"></Comment>
 
   </div>
 </template>
@@ -48,7 +47,7 @@
 
 import blog from '@/api/blog.js';
 import { Message } from 'element-ui';
-import { getMemberid } from '@/utils/core.js';
+import { getMemberid, isLogin, setRedirUrl } from '@/utils/core.js';
 // import CommentArea from '@/components/CommentArea.vue';
 import Comment from '../blog/comment';
 
@@ -61,7 +60,9 @@ export default {
       blogInfo: {},
       preBlog: null,
       nextBlog: null,
-      IsOrNotPraise: false,//当前账户是否点赞
+      isPraise: false,//当前账户是否点赞
+      isOrNotLogin: false,
+      disabled: false,
 
     }
 
@@ -79,6 +80,9 @@ export default {
     this.getPrenext();
     //查询是否点赞
     this.getIsOrPraise();
+
+    this.isOrNotLogin = isLogin();
+
   },
   mounted () {
 
@@ -129,22 +133,38 @@ export default {
     },
     //点赞
     goPraise () {
-      var token = localStorage.getItem('token');
-      window.console.log(token);
-      if (token == undefined || token == '' || token.length == 0) {
-        var url = window.location.href;
-        localStorage.setItem('redirurl', url);
-        this.$router.push('/login');
-        return;
+      if (this.disabled) {
+        window.console.log('nonon disabled');
+      }
+      else {
+
+        this.disabled = true;
+        var token = localStorage.getItem('token');
+        window.console.log(token);
+        if (token == undefined || token == '' || token.length == 0) {
+          setRedirUrl();
+          this.$router.push('/login');
+          return;
+        }
+
+        if (this.isPraise) {
+          this.blogInfo.Start = this.blogInfo.Start - 1;
+        }
+        else {
+          this.blogInfo.Start = this.blogInfo.Start + 1;
+        }
+        this.isPraise = !this.isPraise;
+        blog.addPraise(token, this.blogNum).then((res) => {
+          window.console.log(res);
+          this.disabled = false;
+        }).catch((err) => {
+          {
+            window.console.log(err);
+            this.disabled = false;
+          }
+        })
       }
 
-      blog.addPraise(token, this.blogNum).then((res) => {
-        window.console.log(res);
-      }).catch((err) => {
-        {
-          window.console.log(err);
-        }
-      })
     },
     //获取当前登录者是否点赞
     getIsOrPraise () {
@@ -155,7 +175,7 @@ export default {
       }
       blog.isOrNotPraise(memid, this.blogNum).then((res) => {
         window.console.log(res);
-        this.isOrNotPraise = res.Data;
+        this.isPraise = res.Data;
       }).catch((err) => {
         {
           window.console.log(err);
@@ -206,6 +226,7 @@ export default {
     position: relative;
     color: white;
     background-color: #e78170;
+    cursor: pointer;
 
     border: 1px solid #e78170;
     -moz-border-radius: 40px;
@@ -248,6 +269,7 @@ export default {
     height: 50px;
     position: relative;
     color: #e78170;
+    cursor: pointer;
 
     border: 1px solid #e78170;
     -moz-border-radius: 40px;

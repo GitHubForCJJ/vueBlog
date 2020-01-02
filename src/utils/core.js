@@ -270,3 +270,8 @@ export function isLogin () {
 
   return true;
 }
+//设置回跳地址
+export function setRedirUrl () {
+  var url = window.location.href;
+  localStorage.setItem('redirurl', url);
+}
