@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 标题 -->
-    <h1 class="blogTitle">" 服务端渲染(Universal/Isomorphic)之React"</h1>
+    <h1 class="blogTitle">"{{blogInfo.Title}}"</h1>
     <!-- 阅读信息 -->
     <div class="viewInfo">
       <div>阅读 <span>{{blogInfo.Views}}</span></div>
@@ -324,6 +324,7 @@ export default {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      cursor: pointer;
     }
     .next {
       //width: 45%;
@@ -333,6 +334,7 @@ export default {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+       cursor: pointer;
     }
   }
 }

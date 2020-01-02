@@ -3,7 +3,7 @@
     <div class="blogApp">
       <div class="aside">
         <div class="top">
-          <div class="flag">
+          <div class="flag" @click="goHome">
             Chen
           </div>
         </div>
@@ -25,7 +25,7 @@
                  title='登录'> <i class="iconFont">&#xe501;</i></a></router-link>
           </div>
 
-          <div class="item"> <a target="_blank"
+          <div class="item"> <a target="_blank" title='博主的git'
                href="https://github.com/GitHubForCJJ/vueBlog"><i class="iconFont git">&#xe606;</i></a></div>
 
         </div>
@@ -90,6 +90,9 @@ export default {
       localStorage.removeItem('memberinfo');
       this.isOrNotLogin = false;
       window.console.log(this.isOrNotLogin)
+    },
+    goHome(){
+      this.$router.push({name:'home'})
     }
 
   },
@@ -108,4 +111,7 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 } */
+.flag{
+  cursor: pointer;
+}
 </style>

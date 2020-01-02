@@ -2,7 +2,7 @@
   <div class="container">
     <div class="commentTop">
       <div> {{ commentList.length || 0 }}条评论</div>
-      <div @click="goNewComment">添加评论</div>
+      <div class="newComment" @click="goNewComment">添加评论</div>
     </div>
 
     <div class="commentList">
@@ -25,8 +25,7 @@
                  :user="true"
                  :parentIndex="index"></Reply>
           <!-- 子回复 -->
-          <form v-if="user"
-                v-bind:id="'replyForm'+index"
+          <form  v-bind:id="'replyForm'+index"
                 class="hide">
 
             <textarea v-show="user"
@@ -40,7 +39,7 @@
                          @click.prevent="submitReply(index,item.Commentid,item.Memberid)">发表</el-button>
             </div>
 
-            <div v-show="!user"
+            <div 
                  class="hide login">
               <span class="loginBtn"
                     @click="goLogin">登录后评论</span>
@@ -115,7 +114,7 @@ export default {
       this.user = isLogin();
       const form = document.getElementById('replyForm' + index);
       window.console.log(index, nickname, tomemberid)
-      window.console.log(form)
+
       if (this.user) {
 
         const formTextArea = form.getElementsByTagName('textarea')[0]
@@ -127,6 +126,18 @@ export default {
         } else {
           form.className += ' hide';
           this.toMemberid = 0;
+        }
+      }
+      else{
+        const formbtnarea = form.getElementsByClassName('login')[0];
+              window.console.log(formbtnarea.className)
+        if (formbtnarea.className.indexOf('hide') > -1) {
+          formbtnarea.className = ' login';
+          form.className='';
+        } 
+        else {
+          formbtnarea.className += ' hide';
+           form.className+=' hide';
         }
       }
 
@@ -233,12 +244,17 @@ export default {
     border-top: 1px solid #d9d9d9;
     border-bottom: 1px solid #d9d9d9;
     margin-bottom: 20px;
+
+        .newComment{
+      cursor: pointer;
+    }
   }
 
   .commentList {
     width: 100%;
 
     box-sizing: border-box;
+
 
     a {
       float: right;
