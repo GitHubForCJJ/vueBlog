@@ -3,7 +3,8 @@
     <div class="blogApp">
       <div class="aside">
         <div class="top">
-          <div class="flag" @click="goHome">
+          <div class="flag"
+               @click="goHome">
             Chen
           </div>
         </div>
@@ -25,7 +26,8 @@
                  title='登录'> <i class="iconFont">&#xe501;</i></a></router-link>
           </div>
 
-          <div class="item"> <a target="_blank" title='博主的git'
+          <div class="item"> <a target="_blank"
+               title='博主的git'
                href="https://github.com/GitHubForCJJ/vueBlog"><i class="iconFont git">&#xe606;</i></a></div>
 
         </div>
@@ -33,16 +35,18 @@
       <div class="mainApp">
         <div class="main">
           <router-view></router-view>
+          <!-- 友情链接 鸣谢 -->
+          <div class="tanks">
+            感谢
+            <a target="_blank"
+               href="http://vue.jackhu.top">JackHu</a>、
+            <a target="_blank"
+               href="https://www.yangshaofeng.com">CarsonYang</a>支持
+          </div>
           <!-- 备案信息 -->
           <footer>©2018 /蜀ICP备18005286号-1 </footer>
         </div>
         <!-- 回到顶部 -->
-        <!-- <div class="backTop"
-             @click="backTop"
-             v-if="showBackTop">
-          <a href="javascript:"> <i class="iconFont top">&#xe609;</i></a>
-        </div> -->
-
         <el-backtop target=".mainApp"
                     :bottom="24">
           <div style="{
@@ -91,8 +95,8 @@ export default {
       this.isOrNotLogin = false;
       window.console.log(this.isOrNotLogin)
     },
-    goHome(){
-      this.$router.push({name:'home'})
+    goHome () {
+      this.$router.push({ name: 'home' })
     }
 
   },
@@ -111,7 +115,10 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 } */
-.flag{
+.flag {
   cursor: pointer;
+}
+.tanks {
+  margin-top: 30px;
 }
 </style>
