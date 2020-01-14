@@ -215,6 +215,7 @@ export default {
       word-break: normal;
       margin-bottom: 20px;
       border: 1px solid rgba(0, 0, 0, 0.15);
+      padding: 5px;
     }
   }
 
@@ -334,7 +335,7 @@ export default {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-       cursor: pointer;
+      cursor: pointer;
     }
   }
 }
