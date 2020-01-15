@@ -237,6 +237,7 @@ export default {
       color: #555;
       margin-top: 10px;
       margin-bottom: 10px;
+      cursor: pointer;
     }
 
     .itemFooter {
