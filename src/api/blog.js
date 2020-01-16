@@ -28,7 +28,7 @@ const blog = {
             encrypt: false,
         });
     },
-    // 获取会员的消息
+    // 获取博客list
     getListBlog (type, page, limit) {
         return axios({
             url: '/Blog/GetListBlog',

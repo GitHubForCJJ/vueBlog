@@ -23,12 +23,17 @@
       </li>
     </ul>
     <!-- 博客list -->
-    <ul class="blogCont">
+    <van-list class="blogCont"
+              v-model="loading"
+              :finished="finished"
+              finished-text=""
+              @load="vantList"
+              loading-text="加载waiting"
+              direction="down">
 
       <li class="blogItem"
           v-for="item in blogList"
           :key="item.BlogNum"
-          :title="item.Title"
           @click="goDetail(item.BlogNum)">
         <div>
           <div class="itemTop">
@@ -47,14 +52,14 @@
         </div>
       </li>
 
-    </ul>
+    </van-list>
 
   </div>
 </template>
 
 <script>
 import blog from '@/api/blog.js';
-import { Message } from 'element-ui';
+//import { Message } from 'element-ui';
 export default {
   name: 'home',
   data () {
@@ -66,13 +71,15 @@ export default {
       //当前选中的类型
       blogType: 0,
       page: 1,
-      limit: 10,
-
+      limit: 8,
+      loading: false,
+      finished: false,
+      totleCount: 0
     }
 
   },
   created () {
-    this.getListBlog(this.blogType, this.page, this.limit);
+    //this.getListBlog(this.blogType, this.page, this.limit);
     this.getTypeList();
     var url = window.location.href;
     //设置默认的跳转地址
@@ -82,23 +89,38 @@ export default {
     goDetail (blogNum) {
       this.$router.push({ path: '/blog', query: { a: blogNum, t: this.blogType } });
     },
+    //list懒加载调用的方法
+    vantList () {
+      this.getListBlog(this.blogType, this.page, this.limit);
+    },
     getListBlog (type, page, limit) {
-
+      var _this = this;
+      _this.page += 1;
       blog.getListBlog(type, page, limit).then((res) => {
+
+        _this.totleCount = res.Count;
         window.console.log(res);
-        if (res.Code == 0) {
+
+        if (res.Data.length > 0) {
           for (var i in res.Data) {
             var time = this.timeAgo(res.Data[i].CreateTime);
             res.Data[i].CreateTime = time;
             this.blogList.push(res.Data[i]);
           }
-          this.blogList = res.Data;
         }
         else {
-          Message.success({ mesage: "err" })
+          _this.page -= 1;
         }
 
-      });
+        //this.blogList = res.Data;
+        this.loading = false;
+        if (this.blogList.length >= this.totleCount) {
+          this.finished = true;
+        }
+
+      }).catch((err) => {
+        window.console.log(err);
+      })
 
     },
     getTypeList () {
@@ -112,11 +134,13 @@ export default {
       });
 
     },
+    //切换类别
     chooseType (type) {
-      // Message.success({ message: type })
       this.blogType = type;
-      this.getListBlog(type, 1, this.limit);
-
+      this.blogList = [];
+      this.page = 1;
+      this.vantList();
+      this.finished = false;
     },
     timeAgo (dateTime) {
       //dateTimeStamp是一个时间毫秒，注意时间戳是秒的形式，在这个毫秒的基础上除以1000，就是十位数的时间戳。13位数的都是时间毫秒。
