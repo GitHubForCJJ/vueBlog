@@ -16,7 +16,7 @@ const blog = {
         obj.num = blogNum;
         return axios({
             url: '/Comment/GetBlogComments',
-            data: JSON.stringify(obj),
+            data: obj,
             encrypt: false,
         });
     },
@@ -24,7 +24,7 @@ const blog = {
     addComment (obj) {
         return axios({
             url: '/Comment/AddItem',
-            data: JSON.stringify(obj),
+            data: obj,
             encrypt: false,
         });
     },
@@ -39,7 +39,7 @@ const blog = {
     getItemBlog (obj) {
         return axios({
             url: '/Blog/GetItemBlog',
-            data: JSON.stringify(obj),
+            data: obj,
             encrypt: false,
         });
     },
@@ -47,7 +47,7 @@ const blog = {
     getPrenext (obj) {
         return axios({
             url: '/Blog/GetPrenextBlog',
-            data: JSON.stringify(obj),
+            data: obj,
             encrypt: false,
         })
 
@@ -64,14 +64,14 @@ const blog = {
     addPraise (token, blognum) {
         return axios({
             url: '/Blog/AddPraise',
-            data: JSON.stringify({ BlogNum: blognum, Token: token }),
+            data: { BlogNum: blognum, Token: token },
             encrypt: false,
         })
     },
     isOrNotPraise (memberid, blognum) {
         return axios({
             url: '/Blog/IsOrNotPraise',
-            data: JSON.stringify({ where: { BlogNum: blognum, MemberId: memberid } }),
+            data: { where: { BlogNum: blognum, MemberId: memberid } },
             encrypt: false,
         })
     }
