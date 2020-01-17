@@ -71,7 +71,7 @@ export default {
       //当前选中的类型
       blogType: 0,
       page: 1,
-      limit: 8,
+      limit: 15,
       loading: false,
       finished: false,
       totleCount: 0
@@ -96,9 +96,12 @@ export default {
     getListBlog (type, page, limit) {
       var _this = this;
       _this.page += 1;
+      this.finished = true;
+      this.loading = false;
       blog.getListBlog(type, page, limit).then((res) => {
 
         _this.totleCount = res.Count;
+
         window.console.log(res);
 
         if (res.Data.length > 0) {
@@ -116,6 +119,9 @@ export default {
         this.loading = false;
         if (this.blogList.length >= this.totleCount) {
           this.finished = true;
+        }
+        else {
+          this.finished = false;
         }
 
       }).catch((err) => {

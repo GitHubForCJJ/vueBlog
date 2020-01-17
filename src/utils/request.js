@@ -53,7 +53,7 @@ const request = ({
   type = 'post',
 }) => {
   // 获取token，无token跳转登录页
-  let headers = 'application/json';
+  let headers = 'application/x-www-form-urlencoded';
   const token = getToken();
   // console.log('token', token);
   // if (!token) toLogin();
@@ -78,7 +78,7 @@ const request = ({
     url,
     baseURL: process.env.VUE_APP_BASEURL,
     method: type,
-    data,
+    data: qs.stringify(data),
     headers: {
       'Content-Type': headers,
     },

@@ -32,7 +32,7 @@ const blog = {
     getListBlog (type, page, limit) {
         return axios({
             url: '/Blog/GetListBlog',
-            data: JSON.stringify({ KID: type, Limit: limit, Page: page }),
+            data: { KID: type, Limit: limit, Page: page },
             encrypt: false,
         });
     },
