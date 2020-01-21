@@ -29,6 +29,8 @@
               finished-text=""
               @load="vantList"
               loading-text="加载waiting"
+              :immediate-check="false"
+              :offset="20"
               direction="down">
 
       <li class="blogItem"
@@ -84,6 +86,7 @@ export default {
     var url = window.location.href;
     //设置默认的跳转地址
     localStorage.setItem('redirurl', url);
+    this.vantList();
   },
   methods: {
     goDetail (blogNum) {
@@ -95,33 +98,27 @@ export default {
     },
     getListBlog (type, page, limit) {
       var _this = this;
-      _this.page += 1;
-      this.finished = true;
-      this.loading = false;
+      _this.finished = true;
       blog.getListBlog(type, page, limit).then((res) => {
-
+        _this.page += 1;
         _this.totleCount = res.Count;
 
         window.console.log(res);
 
         if (res.Data.length > 0) {
           for (var i in res.Data) {
-            var time = this.timeAgo(res.Data[i].CreateTime);
+            var time = _this.timeAgo(res.Data[i].CreateTime);
             res.Data[i].CreateTime = time;
-            this.blogList.push(res.Data[i]);
+            _this.blogList.push(res.Data[i]);
           }
         }
-        else {
-          _this.page -= 1;
-        }
 
-        //this.blogList = res.Data;
-        this.loading = false;
-        if (this.blogList.length >= this.totleCount) {
-          this.finished = true;
+        _this.loading = false;
+        if (_this.blogList.length >= _this.totleCount) {
+          _this.finished = true;
         }
         else {
-          this.finished = false;
+          _this.finished = false;
         }
 
       }).catch((err) => {
@@ -142,11 +139,14 @@ export default {
     },
     //切换类别
     chooseType (type) {
-      this.blogType = type;
-      this.blogList = [];
-      this.page = 1;
-      this.vantList();
-      this.finished = false;
+      var _this = this;
+      _this.blogType = type;
+      _this.blogList = [];
+      _this.page = 1;
+
+      _this.loading = false;
+      _this.finished = false;
+      _this.vantList();
     },
     timeAgo (dateTime) {
       //dateTimeStamp是一个时间毫秒，注意时间戳是秒的形式，在这个毫秒的基础上除以1000，就是十位数的时间戳。13位数的都是时间毫秒。
