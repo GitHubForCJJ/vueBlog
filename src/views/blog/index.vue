@@ -93,7 +93,8 @@ export default {
       //var id = this.id;
       blog.getItemBlog(obj).then((res) => {
 
-        var content = decodeURI(res.Data.Content);
+        window.console.log(res.Data.Content);
+        var content = res.Data.Content;
         res.Data.Content = content;
         this.blogInfo = res.Data;
 
