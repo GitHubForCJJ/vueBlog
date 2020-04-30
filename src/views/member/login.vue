@@ -1,6 +1,30 @@
 <template>
   <div class="container">
-    <!-- 登录 -->
+
+    <van-form v-show="showType==0"
+              @submit="
+              onSubmit">
+      <van-field v-model="loginForm.UserAccount"
+                 name="邮件地址"
+                 label="邮件地址"
+                 placeholder="邮件地址"
+                 :rules="[{ required: true, message: '请填写邮件地址' }]" />
+      <van-field v-model="loginForm.Password"
+                 type="password"
+                 name="密码"
+                 label="密码"
+                 placeholder="密码"
+                 :rules="[{ required: true, message: '请填写密码' }]" />
+      <div style="margin: 16px;">
+        <van-button round
+                    block
+                    type="info"
+                    native-type="submit">
+          提交
+        </van-button>
+      </div>
+    </van-form>
+    登录
     <el-form v-show="showType==0"
              label-width="80px">
       <el-form-item label="邮件地址">

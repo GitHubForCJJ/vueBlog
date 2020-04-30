@@ -9,9 +9,6 @@
           </div>
         </div>
         <div class="bottom">
-          <!-- <div class="item"> <i class="iconFont">&#xe699;</i></div> -->
-          <!-- <div class="item"> <i class="iconFont">&#xe69a;</i></div> -->
-          <!-- <div class="item"> <i class="iconFont login">&#xe501;</i></div> -->
 
           <div class="item"
                v-if="isOrNotLogin"
@@ -28,13 +25,15 @@
 
           <div class="item"> <a target="_blank"
                title='博主的git'
-               href="https://github.com/GitHubForCJJ/vueBlog"><i class="iconFont git">&#xe606;</i></a></div>
+               href="https://github.com/GitHubForCJJ"><i class="iconFont git">&#xe606;</i></a></div>
 
         </div>
       </div>
-      <div class="mainApp">
+      <div class="mainApp"
+           id="mainApp">
+        <!-- main  -->
         <div class="main">
-          <router-view></router-view>
+          <router-view id="cnt"></router-view>
           <!-- 友情链接 鸣谢 -->
           <div class="tanks">
             感谢
@@ -47,20 +46,11 @@
           <footer>©2018 /蜀ICP备18005286号-1 </footer>
         </div>
         <!-- 回到顶部 -->
-        <el-backtop target=".mainApp"
-                    :bottom="24">
-          <div style="{
-        height: 100%;
-        width: 100%;
-        background-color: #f2f5f6;
-        box-shadow: 0 0 6px rgba(0,0,0, .12);
-        text-align: center;
-        line-height: 40px;
-        color: #e78170;
-      }">
-            UP
-          </div>
-        </el-backtop>
+        <div v-if="isShow"
+             @click='backTop'
+             id="backtop">
+          Top
+        </div>
       </div>
     </div>
 
@@ -73,8 +63,9 @@ export default {
   name: 'app',
   data: function () {
     return {
-      isOrNotLogin: false
-
+      isOrNotLogin: false,
+      isShow: false,
+      scrollTop: 0
     };
   },
   components: {
@@ -87,6 +78,7 @@ export default {
 
   mounted () {
     // window.addEventListener('scroll', this.handleScroll, true);
+    window.addEventListener('scroll', this.scrollToTop, true)
   },
   methods: {
     goOut () {
@@ -97,11 +89,37 @@ export default {
     },
     goHome () {
       this.$router.push({ name: 'home' })
+    },
+    // 点击图片回到顶部方法，加计时器是为了过渡顺滑
+    backTop () {
+      const that = this
+      window.console.log("12")
+      let timer = setInterval(() => {
+        let ispeed = Math.floor(-that.scrollTop / 5)
+        // document.documentElement.scrollTop = document.body.scrollTop = that.scrollTop + ispeed
+        document.getElementById("mainApp").scrollTop = that.scrollTop + ispeed
+        if (that.scrollTop === 0) {
+          clearInterval(timer)
+        }
+      }, 16)
+    },
+    // 为了计算距离顶部的高度，当高度大于60显示回顶部图标，小于60则隐藏
+    scrollToTop () {
+      const that = this
+
+      //这里是直接找到首页的  mainapp元素获取它的scrolltop距离
+      let sTop = document.documentElement.scrollTop || document.body.scrollTop || document.getElementById("mainApp").scrollTop;
+      that.scrollTop = sTop
+      if (sTop > 150) {
+        that.isShow = true
+      } else {
+        that.isShow = false
+      }
     }
 
   },
   destroyed () {
-    // window.removeEventListener('scroll', this.scrollToTop);
+    window.removeEventListener('scroll', this.scrollToTop);
   }
 }
 </script>
@@ -120,5 +138,21 @@ export default {
 }
 .tanks {
   margin-top: 30px;
+}
+.mainApp {
+  position: relative;
+}
+#backtop {
+  position: fixed;
+  bottom: 15px;
+  right: 22px;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  background-color: #f2f5f6;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  line-height: 40px;
+  color: #e78170;
 }
 </style>

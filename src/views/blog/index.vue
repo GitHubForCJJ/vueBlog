@@ -46,7 +46,7 @@
 <script>
 
 import blog from '@/api/blog.js';
-import { Message } from 'element-ui';
+// import { Message } from 'element-ui';
 import { getMemberid, isLogin, setRedirUrl } from '@/utils/core.js';
 // import CommentArea from '@/components/CommentArea.vue';
 import Comment from '../blog/comment';
@@ -99,7 +99,7 @@ export default {
         this.blogInfo = res.Data;
 
       }).catch(() => {
-        Message.warning({ message: "系统错误" })
+        // Message.warning({ message: "系统错误" })
       });
 
     },

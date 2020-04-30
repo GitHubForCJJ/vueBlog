@@ -46,8 +46,6 @@
   }
 }
 
-
-
 html,
 body {
   min-height: 100%;
@@ -71,117 +69,151 @@ body {
 }
 
 .blogApp {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
-  overflow: hidden;
+  //overflow: hidden;
 }
 
-.aside {
-  height: 100%;
-  width: 45px;
-  background-color: rgb(42, 42, 42);
-  position: relative;
+@media screen and (min-width: 800px) {
+  .aside {
+    height: 100%;
+    width: 45px;
+    background-color: rgb(42, 42, 42);
+    position: relative;
 
-  .top {
-    display: flex;
-    width: 100%;
-    height: 30%;
-    flex-direction: column;
-
-    .flag {
-      // background: url(../assets/icons/sunday.svg) no-repeat;
-      // background-size: 20px 20px; // 在这设置图标大小，不设置就是svg默认的宽高
-      width: 100%;
-      height: 45px;
-      background-color: #e78170;
-      color: white;
-      text-align: center;
-      line-height: 45px;
-
-    }
-
-    img {
-      width: 100%;
-      height: 45px;
-    }
-
-  }
-
-  .bottom {
-    width: 100%;
-    height: 30%;
-    position: absolute;
-    left: 0;
-    bottom: 15px;
-    display: flex;
-    flex-direction: column-reverse;
-    text-align: center;
-
-    .item {
-      width: 45px;
-      height: 40px;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
+    .top {
       display: flex;
+      width: 100%;
+      height: 30%;
+      flex-direction: column;
 
-      .sun {
+      .flag {
+        // background: url(../assets/icons/sunday.svg) no-repeat;
+        // background-size: 20px 20px; // 在这设置图标大小，不设置就是svg默认的宽高
+        width: 100%;
+        height: 45px;
+        background-color: #e78170;
         color: white;
+        text-align: center;
+        line-height: 45px;
+
       }
 
-      .login {
-        color: #e78170;
-      }
-
-      .git:hover {
-        color: green;
+      img {
+        width: 100%;
+        height: 45px;
       }
 
     }
 
-  }
+    .bottom {
+      width: 100%;
+      height: 30%;
+      position: absolute;
+      left: 0;
+      bottom: 15px;
+      display: flex;
+      flex-direction: column-reverse;
+      text-align: center;
 
-  a {
-    text-decoration: none;
-    opacity: 0.7;
-  }
+      .item {
+        width: 45px;
+        height: 40px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        display: flex;
 
-  a:hover {
-    opacity: 1;
+        .sun {
+          color: white;
+        }
+
+        .login {
+          color: #e78170;
+        }
+
+        .git:hover {
+          color: green;
+        }
+
+      }
+
+    }
+
+    a {
+      text-decoration: none;
+      opacity: 0.7;
+    }
+
+    a:hover {
+      opacity: 1;
+    }
   }
 }
 
+@media screen and (min-width: 321px) and (max-width: 414px) {
+  .aside {
+    width: 0;
 
-.backTop {
-  width: 50px;
-  height: 50px;
-  position: fixed;
-  right: 30px;
-  bottom: 30px;
-  text-align: center;
-  line-height: 50px;
-  //background-color: rgb(230, 230, 230);
-  border-radius: 2px;
+    .top {
+      display: none;
 
-  .top {
-    color: #e78170;
-    font-size: 30px;
+
+      .flag {
+        display: none;
+
+      }
+
+      img {
+        display: none;
+      }
+
+    }
+
+    .bottom {
+      display: none;
+
+      .item {
+        display: none;
+
+        .sun {
+          display: none;
+        }
+
+        .login {
+          display: none;
+        }
+
+        .git:hover {
+          display: none;
+        }
+
+      }
+
+    }
+
+    a {
+      display: none;
+    }
+
+    a:hover {
+      display: none;
+    }
   }
-
 }
 
 .mainApp {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: white;
   overflow-y: auto;
 }
 
 @media screen and (min-width: 321px) and (max-width: 375px) {
   .main {
-    width: 100%;
-    max-height: 100%;
+    width: 100vw;
+    max-height: 100vh;
     box-sizing: border-box;
     padding-left: 10px;
     padding-right: 10px;
@@ -192,9 +224,9 @@ body {
   .main {
     width: 100%;
     max-height: 100%;
-    margin-left: 25%;
+
     box-sizing: border-box;
-    padding-left: 35px;
+    padding-left: 15px;
     padding-right: 10px;
   }
 }
@@ -213,7 +245,7 @@ body {
 @media screen and (min-width: 800px) {
   .main {
     width: 50%;
-    max-height: 100%;
+    max-height: 100vh;
     margin-left: 25%;
     box-sizing: border-box;
     padding-left: 35px;

@@ -2,7 +2,8 @@
   <div class="container">
     <div class="commentTop">
       <div> {{ commentList.length || 0 }}条评论</div>
-      <div class="newComment" @click="goNewComment">添加评论</div>
+      <div class="newComment"
+           @click="goNewComment">添加评论</div>
     </div>
 
     <div class="commentList">
@@ -25,7 +26,7 @@
                  :user="true"
                  :parentIndex="index"></Reply>
           <!-- 子回复 -->
-          <form  v-bind:id="'replyForm'+index"
+          <form v-bind:id="'replyForm'+index"
                 class="hide">
 
             <textarea v-show="user"
@@ -39,8 +40,7 @@
                          @click.prevent="submitReply(index,item.Commentid,item.Memberid)">发表</el-button>
             </div>
 
-            <div 
-                 class="hide login">
+            <div class="hide login">
               <span class="loginBtn"
                     @click="goLogin">登录后评论</span>
             </div>
@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import { Message } from 'element-ui';
+// import { Message } from 'element-ui';
 import blog from '@/api/blog.js';
 import Reply from '../blog/reply';
 import DefaultAvatar from '../../assets/logo.png';
@@ -128,16 +128,16 @@ export default {
           this.toMemberid = 0;
         }
       }
-      else{
+      else {
         const formbtnarea = form.getElementsByClassName('login')[0];
-              window.console.log(formbtnarea.className)
+        window.console.log(formbtnarea.className)
         if (formbtnarea.className.indexOf('hide') > -1) {
           formbtnarea.className = ' login';
-          form.className='';
-        } 
+          form.className = '';
+        }
         else {
           formbtnarea.className += ' hide';
-           form.className+=' hide';
+          form.className += ' hide';
         }
       }
 
@@ -148,7 +148,7 @@ export default {
       if (sessionid == '') {
         var newcommenttext = document.getElementById('newcommenttextarea');
         if (newcommenttext.value.length == 0) {
-          Message.warning({ message: '内容不能为空' });
+          // Message.warning({ message: '内容不能为空' });
           return;
         }
         this.addComment(newcommenttext.value, '')
@@ -158,7 +158,7 @@ export default {
         const form = document.getElementById('replyForm' + index);
         const formTextArea = document.getElementById('replyContent' + index);
         if (formTextArea.value.length == 0) {
-          Message.warning({ message: '内容不能为空' });
+          // Message.warning({ message: '内容不能为空' });
           return;
         }
         this.addComment(formTextArea.value, sessionid);
@@ -245,7 +245,7 @@ export default {
     border-bottom: 1px solid #d9d9d9;
     margin-bottom: 20px;
 
-        .newComment{
+    .newComment {
       cursor: pointer;
     }
   }
@@ -254,7 +254,6 @@ export default {
     width: 100%;
 
     box-sizing: border-box;
-
 
     a {
       float: right;
