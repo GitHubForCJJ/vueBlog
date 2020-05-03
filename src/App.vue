@@ -13,13 +13,19 @@
           <div class="item"
                v-if="isOrNotLogin">
             <router-link :to="{name:'updatemember'}"><a href="javascript:"
-                 title='点击查看信息、退出操作'> <i class="iconFont"
-                   style="color:#d96f5d;">&#xe501;</i></a></router-link>
+                 title='点击查看信息、退出操作'> 
+                 <i v-if='headicon.length===0' class="iconFont"
+                   style="color:#d96f5d;">&#xe501;</i>
+
+                 <van-image v-else width="30" height="30" fit='cover' round lazy-load :src='headicon'/>
+                  </a></router-link>
           </div>
           <div class="item"
                v-else>
             <router-link :to="{name:'login'}"><a href="javascript:"
-                 title='点击登录'> <i class="iconFont">&#xe501;</i></a></router-link>
+                 title='点击登录'> <i class="iconFont">&#xe501;</i></a>
+                 
+                 </router-link>
           </div>
 
           <div class="item"> <a target="_blank"
@@ -55,14 +61,15 @@
 </template>
 
 <script>
-import { isLogin } from '@/utils/core.js';
+import { isLogin,getMemberIcon } from '@/utils/core.js';
 export default {
   name: 'app',
   data: function () {
     return {
       isOrNotLogin: false,
       isShow: false,
-      scrollTop: 0
+      scrollTop: 0,
+      headicon:''
     };
   },
   components: {
@@ -77,6 +84,7 @@ export default {
     // window.addEventListener('scroll', this.handleScroll, true);
     window.addEventListener('scroll', this.scrollToTop, true);
     this.isOrNotLogin = isLogin();
+    this.headicon=getMemberIcon();
   },
   methods: {
     goHome () {
@@ -108,14 +116,17 @@ export default {
         that.isShow = false
       }
     },
+    //刷新登录状态
     refrshLogin (key) {
       window.console.log('run')
       if (key) {
         this.isOrNotLogin = true;
+          this.headicon=getMemberIcon();
         return;
       }
       window.console.log(this.isOrNotLogin)
       this.isOrNotLogin = isLogin();
+        this.headicon=getMemberIcon();
     }
 
 

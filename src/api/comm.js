@@ -5,14 +5,14 @@
  * @Last Modified by: Tangfan
  * @Last Modified time: 2019-11-21 14:15:48
  */
-import { get } from 'https';
+// import { get } from 'https';
 import axios from '@/utils/request';
 
 const comm = {
   // 获取七牛云上传token
   getQiNiuUploadToken () {
     return axios({
-      url: '/Comm/GetQiNiuUploadToken',
+      url: '/Common/GetQiNiuUploadToken',
       encrypt: false,
     });
   },

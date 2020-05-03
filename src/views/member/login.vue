@@ -44,6 +44,12 @@
 
     <!-- 注册 -->
     <van-form v-show="showType==1">
+      <!-- 上传头像  vant 属性绑定时不加冒号  时间时才加-->
+      <div style="width:100%;height:100px;text-align:center">
+       <van-uploader style="margin:0 auto"  :show-upload="fileList.length===0" :before-read="beforeRead" :after-read="afterRead" upload-text='你的头像'
+       v-model="fileList"  :max-size="1 * 1024 * 1024"  @oversize="onOversize"/>
+      </div>
+  
       <!-- 登录页 用户表单 -->
       <van-field v-model="registForm.UserAccount"
                  clearable
@@ -115,7 +121,8 @@
                  label="邮箱"
                  right-icon="question-o"
                  placeholder="请输入邮箱地址"
-                 left-icon="contact"
+                 left-icon="contact" 
+                 
                  @click-right-icon="$toast('用户名必须有效邮箱地址')" />
 
       <van-field v-model="resetForm.Password"
@@ -167,14 +174,18 @@ import { getRanStr } from '@/utils/core.js';
 import md5 from '@/utils/md5.js';
 import baseurl from '@/api/baseurl.js';
 import { Toast } from 'vant';
+import upload from '@/utils/upload.js'
+
 const TIME_COUNT = 60;
+
+
 export default {
   name: 'login',
 
   data () {
     return {
       //控制登录  注册  修改密码显示
-      showType: 0,
+      showType: 1,
       resettip: '发送验证码',//重置二维码显示文本
       baseqrcodeimgurl: '',//图片二维码地址
       tip: '发送验证码',
@@ -194,6 +205,7 @@ export default {
         Qrcode: '',
         Qrcodekey: '',
         UserName: '',//昵称
+        UserIcon:''
       },
       resetForm: {
         UserAccount: '',
@@ -202,7 +214,8 @@ export default {
         QrcodeKey: ''
       },
       Surepassword: '',
-      Password: ''
+      Password: '',
+      fileList:[],//用于存储上传七牛后返回的图片地址 用于预览 是一个对象{url:''}详情看vant  文件上传
 
     }
 
@@ -215,8 +228,38 @@ export default {
     that.baseqrcodeimgurl = baseurl.api + '/common/GetAuthCode?authcodekey=' + Math.floor(Math.random() * (9999999 - 1000000));
   },
   methods: {
-    onSubmit (values) {
-      window.console.log('submit', values);
+    onOversize() {
+          Toast.fail('请上传不超过1M的图片')
+    },
+    //上传文件前的验证
+    beforeRead(file) {
+      window.console.log(file)
+      if (file.type !== 'image/jpeg'&&file.type!=='image/png'&&file.type!=='image/svg+xml') {
+        Toast('请上传 jpg,png,svg 格式图片');
+        return false;
+      }
+      return true;
+    },
+    //上传操作
+    afterRead(file) {
+      var that=this;
+      // 此时可以自行将文件上传至服务器
+      window.console.log(file.file);
+      var arr=new Array();
+      arr.push(file.file);
+      window.console.log(arr)
+      upload(arr, { folder: 'memberavg' })
+        .then((res) => {
+          that.fileList=[]
+          that.fileList.push({url:res[0]})
+          window.console.log(that.fileList)
+          //closeLoad();
+        })
+        .catch((err) => {
+          window.console.log(err);
+        });
+
+
     },
     goLogin () {
       var that = this;
@@ -267,6 +310,7 @@ export default {
     //注册
     goRegist () {
       var that = this;
+      window.console.log(that.fileList)
       if (that.registForm.UserAccount == '' || that.registForm.UserAccount.length == 0) {
         Toast.fail('请输入正确的邮箱地址');
         return;
@@ -294,6 +338,9 @@ export default {
         Toast.fail('2次密码不一致');
         return;
       }
+      if(that.fileList.length>0){
+        that.registForm.UserIcon=that.fileList[0].url
+      }
       that.registForm.UserPassword = md5(that.Password).toUpperCase();
       var keyindex = that.baseqrcodeimgurl.indexOf('authcodekey=')
       var authcodekey = that.baseqrcodeimgurl.substring(keyindex + 12, that.baseqrcodeimgurl.length)
@@ -317,7 +364,7 @@ export default {
 
         member.memberLogin(that.loginForm).then((res) => {
           Toast.success('登录成功')
-          that.$parent.refrshLogin(true);
+          that.$parent.refrshLogin(true);//刷新登录状态
 
           window.console.log(res)
           localStorage.setItem('token', res.Data.Token);
@@ -477,7 +524,8 @@ export default {
           this.showType = 0;
           break;
       }
-    }
+    },
+
 
   }
 }

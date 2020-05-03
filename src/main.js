@@ -1,8 +1,7 @@
 
 import Vue from 'vue';
-//import ElementUI from 'element-ui';
-import { Dialog, List, Form, Pagination, Button, Field, Toast } from 'vant';
-//import 'element-ui/lib/theme-chalk/index.css';
+import { Dialog, List, Form, Pagination, Button, Field, Toast,Image as VanImage ,Lazyload,Uploader  } from 'vant';
+
 import 'vant/lib/index.css';
 import App from './App.vue';
 import './style/app.less';
@@ -18,7 +17,9 @@ Vue.use(Form);
 Vue.use(Button);
 Vue.use(Field);
 Vue.use(Toast);
-
+Vue.use(VanImage);
+Vue.use(Lazyload);
+Vue.use(Uploader);
 
 Vue.config.productionTip = false
 

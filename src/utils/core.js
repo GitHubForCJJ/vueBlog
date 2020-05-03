@@ -243,6 +243,15 @@ export function getMemberid () {
   var member = JSON.parse(meminfo);
   return member.KID;
 }
+// 获取会员头像
+export function getMemberIcon () {
+  var meminfo = localStorage.getItem('memberinfo');
+  if (meminfo == undefined || meminfo.length == 0) {
+    return '';
+  }
+  var member = JSON.parse(meminfo);
+  return member.UserIcon;
+}
 // 获取会员
 export function getMember () {
   var meminfo = localStorage.getItem('memberinfo');

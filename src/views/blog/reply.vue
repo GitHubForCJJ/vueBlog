@@ -9,7 +9,7 @@
           {{reply.Content}}
         </p>
         <div class="time"> {{reply.CreateTime}} <a href="#"
-             @click="showReply(parentIndex,reply.MemberName,reply.Memberid)">回复</a></div>
+             @click.prevent="showReply(parentIndex,reply.MemberName,reply.Memberid)">回复</a></div>
       </div>
       <!-- <div class="replyItem">
         <p class="content">

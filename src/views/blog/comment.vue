@@ -19,7 +19,7 @@
           </div>
         </div>
         <p class="itemContent">{{item.Content}}<a href="#"
-             @click="showReply(index,item.MemberName,item.Memberid)">回复</a></p>
+             @click.prevent="showReply(index,item.MemberName,item.Memberid)">回复</a></p>
         <div class="itemReplayList">
           <Reply v-if="item.Replys.length>0"
                  :replyList='item.Replys'
@@ -36,14 +36,15 @@
                       cols="30"
                       rows="10"></textarea>
             <div v-show="user">
-              <vant-button type="primary"
-                           @click.prevent="submitReply(index,item.Commentid,item.Memberid)">发表</vant-button>
+        <van-button style="width:80px;background-color:#e78170;color:white"
+                    size="small"
+                    @click.prevent="submitReply(index,item.Commentid,item.Memberid)">发表 </van-button>
             </div>
 
             <div class="hide login">
               <van-button style="width:80px;background-color:#e78170;color:white"
                           size="small"
-                          @click="goLogin()">登录后评论 </van-button>
+                          @click.prevent="goLogin()">登录后评论 </van-button>
             </div>
 
           </form>
@@ -61,7 +62,7 @@
                 maxlength="500"
                 cols="30"
                 rows="10"
-                placeholder="留下你的足迹.."></textarea>
+                placeholder="留下你的足迹..."></textarea>
       <div>
         <van-button style="width:80px;background-color:#e78170;color:white"
                     size="small"

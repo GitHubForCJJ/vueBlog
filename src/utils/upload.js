@@ -6,12 +6,12 @@ let token;
 let expire;
 const qiniu = require('qiniu-js');
 
-let GHM_QINIU_API = 'http://cdn1.lieweiyou.com/';// 七牛云上传地址
+let GHM_QINIU_API = 'http://qiniu.chenjianjun.info/';// 七牛云上传地址
 
 // 获取1-5的随机数
-const getRndInteger = function (min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+// const getRndInteger = function (min, max) {
+//   return Math.floor(Math.random() * (max - min + 1)) + min;
+// };
 
 // 取得上传token
 const getToken = function () {
@@ -27,9 +27,10 @@ const createUId = function () {
 };
 
 // 上传到七牛云(单个文件)
-function update (file, opt) {
-  GHM_QINIU_API = `http://cdn${getRndInteger(1, 5)}.lieweiyou.com/`;
+const  update =function update (file, opt) {
+  GHM_QINIU_API = `http://qiniu.chenjianjun.info/`;
   return getToken().then((token) => {
+    window.console.log(token)
     opt = ext(opt, {
       types: ['image/png', 'image/jpeg', 'image/gif'],
     });
@@ -49,7 +50,7 @@ function update (file, opt) {
     return new Promise(((resolve, reject) => {
       qiniu.upload(file, name, token, extra, config).subscribe(
         opt.next || ((ret) => {
-          // console.log(`上传中：${ret.total.percent}%`);
+           window.console.log(`上传中：${ret.total.percent}%`);
         }),
         reject,
         ret => resolve(GHM_QINIU_API + ret.key),
@@ -75,6 +76,7 @@ function update (file, opt) {
 const upload = function (em, opt) {
   const $pms = [];
   const files = em.files || em;
+  window.console.log(files.length)
 
   for (let i = 0; i < files.length; i++) $pms.push(update(files[i], opt));
   return Promise.all($pms).then((arr) => {
