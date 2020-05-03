@@ -36,13 +36,14 @@
                       cols="30"
                       rows="10"></textarea>
             <div v-show="user">
-              <el-button type="primary"
-                         @click.prevent="submitReply(index,item.Commentid,item.Memberid)">发表</el-button>
+              <vant-button type="primary"
+                           @click.prevent="submitReply(index,item.Commentid,item.Memberid)">发表</vant-button>
             </div>
 
             <div class="hide login">
-              <span class="loginBtn"
-                    @click="goLogin">登录后评论</span>
+              <van-button style="width:80px;background-color:#e78170;color:white"
+                          size="small"
+                          @click="goLogin()">登录后评论 </van-button>
             </div>
 
           </form>
@@ -62,20 +63,23 @@
                 rows="10"
                 placeholder="留下你的足迹.."></textarea>
       <div>
-        <el-button type="primary"
-                   @click.prevent="submitReply(0,'',0)">发表</el-button>
+        <van-button style="width:80px;background-color:#e78170;color:white"
+                    size="small"
+                    @click.prevent="submitReply(0,'',0)">发表 </van-button>
       </div>
     </div>
     <div v-else
          class="login">
-      <span class="loginBtn"
-            @click="goLogin">登录后评论</span>
+      <van-button style="width:80px;background-color:#e78170;color:white"
+                  size="small"
+                  @click="goLogin()">登录后评论 </van-button>
+
     </div>
   </div>
 </template>
 
 <script>
-// import { Message } from 'element-ui';
+
 import blog from '@/api/blog.js';
 import Reply from '../blog/reply';
 import DefaultAvatar from '../../assets/logo.png';
@@ -332,14 +336,12 @@ export default {
     text-align: center;
 
     .loginBtn {
-      color: #fff;
+      color: white;
       display: inline-block;
-      background-color: #5bc0de;
-      border-color: #46b8da;
+      background-color: #e78170;
+      border-color: #e78170;
       cursor: pointer;
       border-radius: 4px;
-      font-size: 14px;
-      height: 30px;
       line-height: 30px;
       padding-left: 8px;
       padding-right: 8px;

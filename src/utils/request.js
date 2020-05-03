@@ -31,7 +31,7 @@ import { ext } from '@/utils/core';
  */
 const baseData = {
   AppId: '358811079015606',
-  AppName: 'dzxzapp',
+  AppName: 'cjjblog',
   AppType: '1',
   AppVersion: '1.0.0.1',
   Page: 1,
@@ -52,6 +52,7 @@ const request = ({
   encrypt = true,
   type = 'post',
 }) => {
+
   // 获取token，无token跳转登录页
   let headers = 'application/x-www-form-urlencoded';
   const token = getToken();
@@ -73,6 +74,12 @@ const request = ({
     data = qs.stringify(data);
     headers = 'application/x-www-form-urlencoded';
   }
+  else {
+    data = ext(data, baseData);
+
+    headers = 'application/x-www-form-urlencoded';
+    data.Token = token;
+  }
 
   return axios({
     url,
@@ -83,11 +90,14 @@ const request = ({
       'Content-Type': headers,
     },
   }).then((res) => {
+
     const obj = res.data;
+
     if (encrypt && resEncrypt && typeof obj.Data === 'string') {
       data = des.decryptByDESModeCBC(obj.Data, key, key);
       obj.Data = JSON.parse(data);
     }
+
     return obj.Code ? Promise.reject(res) : Promise.resolve(obj);
   }).catch((err) => {
     let response;

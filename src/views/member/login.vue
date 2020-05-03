@@ -1,176 +1,208 @@
 <template>
   <div class="container">
+    <!-- 登录页 用户表单 -->
+    <van-form v-show="showType==0">
 
-    <van-form v-show="showType==0"
-              @submit="
-              onSubmit">
       <van-field v-model="loginForm.UserAccount"
-                 name="邮件地址"
-                 label="邮件地址"
-                 placeholder="邮件地址"
-                 :rules="[{ required: true, message: '请填写邮件地址' }]" />
+                 clearable
+                 label="用户名"
+                 right-icon="question-o"
+                 placeholder="请输入用户名"
+                 left-icon="contact"
+                 @click-right-icon="$toast('用户名必须是有效邮箱地址')" />
+
       <van-field v-model="loginForm.Password"
+                 clearable
                  type="password"
-                 name="密码"
                  label="密码"
-                 placeholder="密码"
-                 :rules="[{ required: true, message: '请填写密码' }]" />
-      <div style="margin: 16px;">
-        <van-button round
-                    block
-                    type="info"
-                    native-type="submit">
+                 right-icon="question-o"
+                 placeholder="请输入密码"
+                 left-icon="closed-eye"
+                 @click-right-icon="$toast('密码必须是数字、字母、下划线')" />
+
+      <div style="margin: 30px 10px;">
+        <van-button size="small"
+                    style="width:80px;background-color:#e78170;color:white"
+                    native-type="submit"
+                    @click="goLogin()">
           提交
         </van-button>
+        <van-button size="small"
+                    plain
+                    type="info"
+                    @click="linkToModel(1)">注册</van-button>
+        <van-button size="small"
+                    plain
+                    type="info"
+                    @click="linkToModel(2)">找回密码</van-button>
+        <van-button size="small"
+                    plain
+                    type='info'
+                    @click="goBack">取消</van-button>
       </div>
     </van-form>
-    登录
-    <el-form v-show="showType==0"
-             label-width="80px">
-      <el-form-item label="邮件地址">
-        <el-col :span="11">
-          <el-input v-model="loginForm.UserAccount"></el-input>
-        </el-col>
-      </el-form-item>
-
-      <el-form-item label="密码">
-        <el-col :span="11">
-          <el-input type="password"
-                    v-model="loginForm.Password"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="success"
-                   @click="goLogin()">登录</el-button>
-        <el-button @click="linkToModel(1)"
-                   type="primary">注册</el-button>
-        <el-button @click="linkToModel(2)"
-                   type="warning">重置密码</el-button>
-        <el-button @click="goBack">取消</el-button>
-      </el-form-item>
-    </el-form>
 
     <!-- 注册 -->
-    <el-form v-show="showType==1"
-             label-width="80px">
-      <el-form-item label="邮件地址">
-        <el-col :span="11">
-          <el-input v-model="registForm.UserAccount"></el-input>
-        </el-col>
+    <van-form v-show="showType==1">
+      <!-- 登录页 用户表单 -->
+      <van-field v-model="registForm.UserAccount"
+                 clearable
+                 label="邮箱"
+                 right-icon="question-o"
+                 placeholder="请输入邮箱地址"
+                 left-icon="free-postage"
+                 @click-right-icon="$toast('用户名必须有效邮箱地址')" />
+      <van-field v-model="registForm.UserName"
+                 clearable
+                 label="昵称"
+                 right-icon="question-o"
+                 placeholder="请输入昵称"
+                 left-icon="contact"
+                 @click-right-icon="$toast('昵称不能为空')" />
 
-      </el-form-item>
-      <el-form-item label="验证码">
-        <el-col :span="7">
-          <el-input v-model="registForm.Qrcode"
-                    style="width: 100%;"
-                    placeholder=""></el-input>
+      <van-field v-model="registForm.Qrcode"
+                 clearable
+                 type="number"
+                 label="验证码"
+                 placeholder="请输入验证码"
+                 left-icon="qr"
+                 @click-right-icon="$toast('验证码必须是数字')">
+        <van-button id="yzm"
+                    style="width:80px"
+                    slot="button"
+                    type="info"
+                    @click="getImgqrCode"><img :src="baseqrcodeimgurl"
+               style="width: 100%;height: 100%;cursor: pointer;" /></van-button>
+      </van-field>
 
-        </el-col>
-        <el-col style="text-align:center"
-                :span="1">-</el-col>
-        <el-col :span="3">
-          <el-button type="primary"
-                     style="width: 100%;"
-                     @click="getQrcode(1)">验证码</el-button>
-        </el-col>
+      <van-field v-model="Password"
+                 clearable
+                 type="password"
+                 label="密码"
+                 right-icon="question-o"
+                 placeholder="请输入密码"
+                 left-icon="closed-eye"
+                 @click-right-icon="$toast('密码必须是数字、字母、下划线')" />
+      <van-field v-model="Surepassword"
+                 clearable
+                 type="password"
+                 label="确认密码"
+                 right-icon="question-o"
+                 placeholder="请输入密码"
+                 left-icon="closed-eye"
+                 @click-right-icon="$toast('密码必须是数字、字母、下划线')" />
 
-      </el-form-item>
-      <el-form-item label="昵称">
-        <el-col :span="11">
-          <el-input v-model="registForm.UserName"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="新密码">
-        <el-col :span="11">
-          <el-input type="password"
-                    v-model="registForm.Password"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="success"
-                   @click="goRegist()">注册</el-button>
-        <el-button @click="goBack">取消</el-button>
-      </el-form-item>
-    </el-form>
+      <div style="margin: 30px 10px;"
+           class="btnarea">
+        <van-button size="small"
+                    style="width:80px;background-color:#e78170;color:white"
+                    native-type="submit"
+                    @click="goRegist()">
+          注册
+        </van-button>
+        <van-button size="small"
+                    plain
+                    type='info'
+                    @click="goBack">取消</van-button>
+      </div>
+    </van-form>
 
-    <!-- 修改密码 -->
-    <el-form v-show="showType==2"
-             label-width="80px">
-      <el-form-item label="邮件地址">
-        <el-col :span="11">
-          <el-input v-model="resetForm.UserAccount"></el-input>
-        </el-col>
+    <!-- 重置密码 -->
+    <van-form v-show="showType==2">
+      <!-- 登录页 用户表单 -->
+      <van-field v-model="resetForm.UserAccount"
+                 clearable
+                 label="邮箱"
+                 right-icon="question-o"
+                 placeholder="请输入邮箱地址"
+                 left-icon="contact"
+                 @click-right-icon="$toast('用户名必须有效邮箱地址')" />
 
-      </el-form-item>
-      <el-form-item label="验证码">
-        <el-col :span="7">
-          <el-input v-model="resetForm.Qrcode"
-                    placeholder=""></el-input>
-        </el-col>
-        <el-col style="text-align:center"
-                :span="1">-</el-col>
-        <el-col :span="3">
-          <el-button type="primary"
-                     style="width: 100%;"
-                     @click="getQrcode(2)">验证码</el-button>
-        </el-col>
+      <van-field v-model="resetForm.Password"
+                 clearable
+                 type="password"
+                 label="密码"
+                 right-icon="question-o"
+                 placeholder="请输入密码"
+                 left-icon="closed-eye"
+                 @click-right-icon="$toast('密码必须是数字、字母、下划线')" />
+      <van-field v-model="resetForm.Qrcode"
+                 clearable
+                 type="number"
+                 label="验证码"
+                 placeholder="请输入验证码"
+                 left-icon="qr"
+                 @click-right-icon="$toast('验证码必须是数字')">
+        <van-button :disabled="disableresetqrbtn"
+                    style="width:80px"
+                    slot="button"
+                    type="info"
+                    size="small"
+                    @click="getQrcode">{{resettip}}</van-button>
+      </van-field>
 
-      </el-form-item>
-      <el-form-item label="新密码">
-        <el-col :span="11">
-          <el-input type="password"
-                    v-model="resetForm.Password"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="success"
-                   @click="goReset">修改</el-button>
-        <el-button @click="goBack">取消</el-button>
-      </el-form-item>
-    </el-form>
+      <div style="margin: 30px 10px;">
+        <van-button style="width:80px;background-color:#e78170;color:white"
+                    native-type="submit"
+                    size="small"
+                    @click="goReset()">
+          重置密码
+        </van-button>
+        <van-button plain
+                    type='info'
+                    size="small"
+                    @click="goBack">取消</van-button>
+      </div>
+    </van-form>
+
   </div>
 </template>
 
-<style lang="less" scoped>
-.container {
-  padding-top: 65px;
-}
-</style>
 
 
 <script>
-import { Message } from 'element-ui';
+
 import member from '@/api/member.js';
 import { getRanStr } from '@/utils/core.js';
 import md5 from '@/utils/md5.js';
-
+import baseurl from '@/api/baseurl.js';
+import { Toast } from 'vant';
+const TIME_COUNT = 60;
 export default {
   name: 'login',
+
   data () {
     return {
       //控制登录  注册  修改密码显示
       showType: 0,
+      resettip: '发送验证码',//重置二维码显示文本
+      baseqrcodeimgurl: '',//图片二维码地址
+      tip: '发送验证码',
+      count: 0,//验证码倒计时
+      time: null,
+      disableresetqrbtn: false,//禁用重置密码的按钮
       transPsw: '',
       loginForm: {
         UserAccount: '',
         UserPassword: '',
-        Password: ''
+        Qrcode: '',
+        Qrcodekey: ''
       },
       registForm: {
         UserAccount: '',
         UserPassword: '',
-        Password: '',
         Qrcode: '',
-        QrcodeKey: '',
+        Qrcodekey: '',
         UserName: '',//昵称
       },
       resetForm: {
         UserAccount: '',
         UserPassword: '',
-        Password: '',
         Qrcode: '',
         QrcodeKey: ''
       },
+      Surepassword: '',
+      Password: ''
 
     }
 
@@ -179,28 +211,42 @@ export default {
 
   },
   mounted () {
-
+    var that = this;
+    that.baseqrcodeimgurl = baseurl.api + '/common/GetAuthCode?authcodekey=' + Math.floor(Math.random() * (9999999 - 1000000));
   },
   methods: {
+    onSubmit (values) {
+      window.console.log('submit', values);
+    },
     goLogin () {
-      window.console.log(this.loginForm)
-      if (this.loginForm.UserAccount == '' || this.loginForm.UserAccount.length == 0 || this.loginForm.UserAccount.indexOf('@') < 0) {
-
-        Message.warning({ message: '请输入正确的邮箱地址' });
+      var that = this;
+      if (that.loginForm.UserAccount == '' || that.loginForm.UserAccount.length == 0) {
+        Toast.fail('请输入正确的邮箱地址');
         return;
       }
-      if (this.loginForm.Password == '' || this.loginForm.Password.length == 0) {
-        Message.warning({ message: '请输入密码' });
+      var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+      if (!reg.test(that.loginForm.UserAccount)) {
+        Toast.fail('请输入正确的邮箱地址');
         return;
       }
-      this.loginForm.UserPassword = md5(this.loginForm.Password).toUpperCase();
 
-      var fromdata = this.loginForm;
+      if (that.loginForm.Password == '' || that.loginForm.Password.length == 0) {
+        Toast.fail("请输入密码");
+        return;
+      }
+      that.loginForm.UserPassword = md5(that.loginForm.Password).toUpperCase();
+
+      var fromdata = that.loginForm;
       fromdata.Password = '';
-
+      const loading = Toast.loading({
+        message: '登录中...',
+        forbidClick: true,
+        duration: 0
+      });
       member.memberLogin(fromdata).then((res) => {
-
-        //Message.info({ message: '登录成功' });
+        Toast.success('登录成功');
+        that.$parent.refrshLogin(true);
+        loading.clear()
         window.console.log(res)
         localStorage.setItem('token', res.Data.Token);
         localStorage.setItem('memberinfo', JSON.stringify(res.Data.MemberInfo));
@@ -208,10 +254,11 @@ export default {
         window.location.href = url;
 
       }).catch((err) => {
+        loading.clear()
         var msg = '登录失败';
         if (err.Msg)
           msg = err.Msg;
-        Message.info({ message: msg });
+        Toast.fail(msg);
       });
     },
     goBack () {
@@ -219,120 +266,199 @@ export default {
     },
     //注册
     goRegist () {
-      window.console.log(this.registForm)
-      if (this.registForm.UserAccount == '' || this.registForm.UserAccount.length == 0 || this.registForm.UserAccount.indexOf('@') < 0) {
-        Message.warning({ message: '请输入正确的邮箱地址' });
+      var that = this;
+      if (that.registForm.UserAccount == '' || that.registForm.UserAccount.length == 0) {
+        Toast.fail('请输入正确的邮箱地址');
         return;
       }
 
-      if (this.registForm.Qrcode == '' || this.registForm.Qrcode.length == 0) {
-        Message.warning({ message: '请输入验证码' });
+      var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+      if (!reg.test(that.registForm.UserAccount)) {
+        Toast.fail('请输入正确的邮箱地址');
         return;
       }
-      if (this.registForm.Password == '' || this.registForm.Password.length == 0) {
-        Message.warning({ message: '请输入密码' });
-        return;
-      }
-      this.registForm.UserPassword = md5(this.registForm.Password).toUpperCase();
-      window.console.log(this.registForm);
-      this.transPsw = this.registForm.Password;
-      var fromdata = this.registForm;
 
+      if (that.registForm.Qrcode == '' || that.registForm.Qrcode.length == 0) {
+        Toast.fail('请输入验证码');
+        return;
+      }
+      if (that.Password == '' || that.Password.length == 0) {
+        Toast.fail('请输入密码');
+        return;
+      }
+      if (that.Surepassword == '' || that.Surepassword.length == 0) {
+        Toast.fail('请再次输入密码');
+        return;
+      }
+      if (that.Password != that.Surepassword) {
+        Toast.fail('2次密码不一致');
+        return;
+      }
+      that.registForm.UserPassword = md5(that.Password).toUpperCase();
+      var keyindex = that.baseqrcodeimgurl.indexOf('authcodekey=')
+      var authcodekey = that.baseqrcodeimgurl.substring(keyindex + 12, that.baseqrcodeimgurl.length)
+      that.registForm.Qrcodekey = authcodekey
+
+      var fromdata = that.registForm;
+      const loading = Toast.loading({
+        message: '注册中...',
+        forbidClick: true,
+        duration: 0
+      });
       member.registItemMember(fromdata).then(() => {
-
-        Message.info({ message: '注册成功 自动登录' });
-        this.loginForm.UserAccount = this.registForm.UserAccount;
-        this.loginForm.Password = this.transPsw;
+        loading.clear()
+        Toast.success('注册成功自动登录');
+        //Message.info({ message: '注册成功 自动登录' });
+        that.loginForm.UserAccount = that.registForm.UserAccount;
+        that.loginForm.UserPassword = that.registForm.UserPassword
         //注册成功自动登录
-        this.goLogin();
+        var fromdata = that.loginForm;
+        fromdata.Password = '';
+
+        member.memberLogin(that.loginForm).then((res) => {
+          Toast.success('登录成功')
+          that.$parent.refrshLogin(true);
+
+          window.console.log(res)
+          localStorage.setItem('token', res.Data.Token);
+          localStorage.setItem('memberinfo', JSON.stringify(res.Data.MemberInfo));
+          var url = localStorage.getItem('redirurl');
+          window.location.href = url;
+
+        }).catch((err) => {
+          var msg = '登录失败';
+          if (err.Msg)
+            msg = err.Msg;
+          Toast.fail(msg);
+        });
+
 
       }).catch((err) => {
+        loading.clear()
         var msg = '注册失败请重试';
         if (err.Msg) {
           msg = err.Msg
         }
-        Message.info({ message: msg });
+        Toast.fail(msg);
       });
 
     },
     //重置密码
     goReset () {
-
-      if (this.resetForm.UserAccount == '' || this.resetForm.UserAccount.length == 0 || this.resetForm.UserAccount.indexOf('@') < 0) {
-        Message.warning({ message: '请输入正确的邮箱地址' });
+      var that = this;
+      if (that.resetForm.UserAccount == '' || that.resetForm.UserAccount.length == 0) {
+        Toast.fail('请输入正确的邮箱地址');
         return;
       }
 
-      if (this.resetForm.Qrcode == '' || this.resetForm.Qrcode.length == 0) {
-        Message.warning({ message: '请输入验证码' });
+      var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+      if (!reg.test(that.resetForm.UserAccount)) {
+        Toast.fail('请输入正确的邮箱地址');
         return;
       }
       if (this.resetForm.Password == '' || this.resetForm.Password.length == 0) {
-        Message.warning({ message: '请输入新密码' });
+        Toast.fail('请输入新密码');
         return;
       }
-      this.resetForm.UserPassword = md5(this.resetForm.Password).toUpperCase();
-      window.console.log(this.resetForm);
-      this.transPsw = this.resetForm.Password;
-      var fromdata = this.resetForm;
-
+      if (this.resetForm.Qrcode == '' || this.resetForm.Qrcode.length == 0) {
+        Toast.fail('请输入验证码');
+        return;
+      }
+      that.resetForm.UserPassword = md5(that.resetForm.Password).toUpperCase();
+      var fromdata = that.resetForm;
+      const loading = Toast.loading({
+        message: '重置密码中...',
+        forbidClick: true,
+        duration: 0
+      });
       member.resetPsw(fromdata).then(() => {
-
-        Message.info({ message: '重置密码成功 自动登录' });
-        this.loginForm.UserAccount = this.resetForm.UserAccount;
-        this.loginForm.Password = this.transPsw;
+        Toast('重置密码成功 自动登录')
+        that.loginForm.UserAccount = that.resetForm.UserAccount;
+        that.loginForm.UserPassword = that.resetForm.UserPassword
         //重置成功自动登录
-        this.goLogin();
-        // this.linkToModel(0);
+        member.memberLogin(that.loginForm).then((res) => {
+          Toast.success('登录成功')
+          loading.clear();
+          that.$parent.refrshLogin(true);
+          localStorage.setItem('token', res.Data.Token);
+          localStorage.setItem('memberinfo', JSON.stringify(res.Data.MemberInfo));
+          var url = localStorage.getItem('redirurl');
+          window.location.href = url;
+
+        }).catch((err) => {
+          loading.clear()
+          var msg = '登录失败';
+          if (err.Msg)
+            msg = err.Msg;
+          Toast.fail(msg);
+        });
 
       }).catch((err) => {
         var msg = '重置密码失败请重试';
         if (err.Msg) {
           msg = err.Msg
         }
-        Message.info({ message: msg });
+        Toast.fail(msg);
       });
 
     },
-    //发送验证码 1注册，2重置密码
-    getQrcode (type) {
+    //发送邮箱验证码  验证码key写入storage防止多次发送 
+    getQrcode () {
+      var that = this;
       var str = '';
       var account = '';
-      window.console.log(this.registForm)
-      switch (type) {
-        case 1:
-          if (this.registForm.UserAccount == '' || this.registForm.UserAccount.length == 0 || this.registForm.UserAccount.indexOf('@') < 0) {
-            Message.warning({ message: '请输入正确的邮箱地址' });
-            return;
+      window.console.log(that.resetForm)
+      //处理倒计时
+      if (!that.timer) {
+        that.count = TIME_COUNT;
+        that.disableresetqrbtn = true;
+        that.timer = setInterval(() => {
+          if (that.count > 0 && that.count <= TIME_COUNT) {
+            that.count--;
+            that.resettip = that.count
+          } else {
+            that.disableresetqrbtn = false;
+            clearInterval(that.timer);
+            that.timer = null;
+            that.resettip = '发送验证码'
           }
-          str = getRanStr(11);
-          this.registForm.QrcodeKey = str;
-          account = this.registForm.UserAccount;
-          break;
-        case 2:
-          if (this.resetForm.UserAccount == '' || this.resetForm.UserAccount.length == 0 || this.resetForm.UserAccount.indexOf('@') < -1) {
-            Message.warning({ message: '请输入正确的邮箱地址' });
-            return;
-          }
-          str = getRanStr(11);
-          this.resetForm.QrcodeKey = str;
-          account = this.resetForm.UserAccount;
-          break;
+        }, 1000)
       }
-      member.sendQrcode(account, str).then((res) => {
+
+      // if (that.resetForm.UserAccount == '' || that.resetForm.UserAccount.length == 0 || that.resetForm.UserAccount.indexOf('@') < 0) {
+      //   Toast.fail('请输入正确的邮箱地址');
+      //   return;
+      // }
+      // var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+      // if (!reg.test(that.resetForm.UserAccount)) {
+      //   Toast.fail('请输入正确的邮箱地址');
+      //   return;
+      // }
+      var storagekey = localStorage.getItem('resetqrcode');
+      if (storagekey != null && storagekey.length > 0) {
+        that.resetForm.QrcodeKey = storagekey;
+      }
+      else {
+        str = getRanStr(11);
+        that.resetForm.QrcodeKey = str;
+        localStorage.setItem('resetqrcode', str);
+      }
+      window.console.log(that.resetForm.QrcodeKey)
+      account = that.resetForm.UserAccount;
+
+      member.sendQrcode(account, that.resetForm.QrcodeKey).then((res) => {
         window.console.log(res);
-        if (res.Code == 0) {
-          Message.info({
-            message: res.Msg
-          })
-        }
-        else {
-          Message.info({
-            message: '程序好像开小差了！'
-          })
-        }
+        Toast('验证码已发出，请留意查看邮件');
+
+      }).catch((err) => {
+        window.console.log(err);
+        Toast.fail('发送邮件验证码失败，请检查邮箱地址是否正确');
       });
 
+    },
+    getImgqrCode () {
+      var that = this;
+      that.baseqrcodeimgurl = baseurl.api + '/common/GetAuthCode?authcodekey=' + Math.floor(Math.random() * (9999999 - 1000000));
     },
     //跳转到对应框 0登录，1注册，2重置密码
     linkToModel (type) {
@@ -358,3 +484,23 @@ export default {
 </script>
 
 
+<style lang="less" scoped>
+.container {
+  padding-top: 65px;
+
+  button {
+    margin-right: 10px;
+  }
+  #yzm {
+    width: 60px;
+    height: 24px;
+    border: none;
+    background: none;
+    box-sizing: boder-box;
+    padding: 0;
+  }
+  #yzm .van-button--normal {
+    padding: 0;
+  }
+}
+</style>

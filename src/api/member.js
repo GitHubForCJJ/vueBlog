@@ -17,7 +17,7 @@ const member = {
         }
         return axios({
             url: '/Member/ResetPsw',
-            data: JSON.stringify(up),
+            data: { Data: JSON.stringify(up) },
             encrypt: false,
         });
     },
@@ -25,29 +25,34 @@ const member = {
     registItemMember (obj) {
         var up = {};
         up.Update = obj;
-        if (obj.Password != '' || obj.Password.length > 0) {
-            obj.Password = '';
-        }
+        window.console.log(obj)
         return axios({
             url: '/Member/RegistItemMember',
-            data: JSON.stringify(up),
+            data: { Data: JSON.stringify(up) },
             encrypt: false,
         });
     },
     sendQrcode (account, codekey) {
         return axios({
             url: '/Member/SendQrcode',
-            data: JSON.stringify({ QrcodeKey: codekey, UserAccount: account }),
+            data: { Data: JSON.stringify({ QrcodeKey: codekey, UserAccount: account }) },
             encrypt: false,
         });
     },
     memberLogin (obj) {
-        if (obj.Password != '' || obj.Password.length > 0) {
-            obj.Password = '';
-        }
+
         return axios({
             url: '/Member/MemberLogin',
-            data: JSON.stringify(obj),
+            data: { Data: JSON.stringify(obj) },
+            encrypt: false,
+        })
+
+    },
+    updateMember (obj) {
+
+        return axios({
+            url: '/Member/UpdateMember',
+            data: { Data: JSON.stringify(obj) },
             encrypt: false,
         })
 

@@ -6,7 +6,7 @@
  * @Last Modified time: 2019-11-29 09:21:35
  */
 
-import md5 from '@/utils/md5.js';
+//import md5 from '@/utils/md5.js';
 /**
  * 获取文件扩展名
  * @param name String
@@ -46,7 +46,7 @@ export function getRanStr (len) {
   for (let i = 0; i < len; i++) {
     str += Math.floor(Math.random() * 10);
   }
-  return md5(str);
+  return str;
 }
 
 /**
@@ -251,6 +251,28 @@ export function getMember () {
   }
   var member = JSON.parse(meminfo);
   return member;
+}
+// 获取会员昵称
+export function getMemberName () {
+  var meminfo = localStorage.getItem('memberinfo');
+  if (meminfo == undefined || meminfo.length == 0) {
+    return '';
+  }
+  var member = JSON.parse(meminfo);
+  return member.UserName;
+}
+// 获取会员账号
+export function getMemberAccount () {
+  var meminfo = localStorage.getItem('memberinfo');
+  if (meminfo == undefined || meminfo.length == 0) {
+    return '';
+  }
+  var member = JSON.parse(meminfo);
+  return member.UserAccount;
+}
+// 获取会员昵称
+export function updateMember (data) {
+  localStorage.setItem('memberinfo', JSON.stringify(data))
 }
 // 获取token
 export function getToken () {

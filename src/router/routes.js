@@ -19,5 +19,10 @@ export default [{
     path: '/login',
     name: 'login',
     component: () => import('@/views/member/login'),
+},
+{
+    path: '/updatemember',
+    name: 'updatemember',
+    component: () => import('@/views/member/updatemember'),
 }
 ];

@@ -61,17 +61,19 @@ const blog = {
         })
     },
     //点赞
-    addPraise (token, blognum) {
+    addPraise (blognum) {
         return axios({
             url: '/Blog/AddPraise',
-            data: { BlogNum: blognum, Token: token },
-            encrypt: false,
+            data: {
+                Data: JSON.stringify({ BlogNum: blognum })
+            },
+            encrypt: false
         })
     },
     isOrNotPraise (memberid, blognum) {
         return axios({
             url: '/Blog/IsOrNotPraise',
-            data: { where: { BlogNum: blognum, MemberId: memberid } },
+            data: { Data: JSON.stringify({ where: { BlogNum: blognum, MemberId: memberid } }) },
             encrypt: false,
         })
     }

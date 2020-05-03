@@ -6,7 +6,7 @@
     <div class="viewInfo">
       <div>阅读 <span>{{blogInfo.Views}}</span></div>
       <div> . 评论 <span>{{blogInfo.Comments}}</span></div>
-      <div> . 喜欢 <span>{{blogInfo.Start}}</span></div>
+      <div> . 喜欢 <span>{{blogstartcount}}</span></div>
     </div>
 
     <!-- 内容 -->
@@ -18,13 +18,13 @@
          v-if="isPraise"
          @click="goPraise()">
       <div class="likeTitle"><i class="iconFont">&#xe64c;</i> Start</div>
-      <div class="likeCount">{{blogInfo.Start}}</div>
+      <div class="likeCount">{{blogstartcount}}</div>
     </div>
     <div v-else
          class="articleLike"
          @click="goPraise()">
       <div class="likeTitle"><i class="iconFont">&#xe64c;</i> Start</div>
-      <div class="likeCount">{{blogInfo.Start}}</div>
+      <div class="likeCount">{{blogstartcount}}</div>
     </div>
     <!-- 上下篇 -->
     <div class="prenext">
@@ -46,10 +46,10 @@
 <script>
 
 import blog from '@/api/blog.js';
-// import { Message } from 'element-ui';
+
 import { getMemberid, isLogin, setRedirUrl } from '@/utils/core.js';
-// import CommentArea from '@/components/CommentArea.vue';
 import Comment from '../blog/comment';
+import { Toast } from 'vant';
 
 export default {
   name: 'blog',
@@ -63,6 +63,7 @@ export default {
       isPraise: false,//当前账户是否点赞
       isOrNotLogin: false,
       disabled: false,
+      blogstartcount: 0
 
     }
 
@@ -71,17 +72,18 @@ export default {
     Comment
   },
   created () {
-    const params = this.$route.query;
-    this.blogNum = params.a;
-    this.blogType = params.t;
+    var that = this;
+    const params = that.$route.query;
+    that.blogNum = params.a;
+    that.blogType = params.t;
     var info = {};
-    info.Num = this.blogNum;
-    this.getBlogDetails(info);
-    this.getPrenext();
+    info.Num = that.blogNum;
+    that.getBlogDetails(info);
+    that.getPrenext();
     //查询是否点赞
-    this.getIsOrPraise();
+    that.getIsOrPraise();
 
-    this.isOrNotLogin = isLogin();
+    that.isOrNotLogin = isLogin();
 
   },
   mounted () {
@@ -98,8 +100,11 @@ export default {
         res.Data.Content = content;
         this.blogInfo = res.Data;
 
-      }).catch(() => {
-        // Message.warning({ message: "系统错误" })
+      }).catch((err) => {
+        var msg = '系统错误';
+        if (err.Msg)
+          msg = err.Msg;
+        Toast.fail(msg);
       });
 
     },
@@ -138,26 +143,29 @@ export default {
         window.console.log('nonon disabled');
       }
       else {
-
         this.disabled = true;
         var token = localStorage.getItem('token');
-        window.console.log(token);
+
         if (token == undefined || token == '' || token.length == 0) {
           setRedirUrl();
           this.$router.push('/login');
           return;
         }
 
-        if (this.isPraise) {
-          this.blogInfo.Start = this.blogInfo.Start - 1;
-        }
-        else {
-          this.blogInfo.Start = this.blogInfo.Start + 1;
-        }
-        this.isPraise = !this.isPraise;
-        blog.addPraise(token, this.blogNum).then((res) => {
-          window.console.log(res);
+
+        blog.addPraise(this.blogNum).then(() => {
+
           this.disabled = false;
+          this.isPraise = !this.isPraise;
+          if (this.isPraise) {
+            this.blogstartcount = this.blogstartcount + 1;
+            Toast('点赞成功')
+          }
+          else {
+            this.blogstartcount = this.blogstartcount - 1;
+            Toast('取消点赞')
+          }
+
         }).catch((err) => {
           {
             window.console.log(err);
@@ -175,8 +183,8 @@ export default {
         return;
       }
       blog.isOrNotPraise(memid, this.blogNum).then((res) => {
-        window.console.log(res);
-        this.isPraise = res.Data;
+        this.isPraise = res.Data.ArticlePraise;
+        this.blogstartcount = res.Data.Count
       }).catch((err) => {
         {
           window.console.log(err);
@@ -207,7 +215,11 @@ export default {
   }
 
   .blogContent {
-    overflow-x: auto;
+    //overflow-x: auto;
+
+    img {
+      widows: 100%;
+    }
 
     pre {
       background-color: #fae5e2;

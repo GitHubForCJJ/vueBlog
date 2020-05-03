@@ -11,16 +11,15 @@
         <div class="bottom">
 
           <div class="item"
-               v-if="isOrNotLogin"
-               @click="goOut()">
-            <a href="javascript:"
-               title="退出"> <i class="iconFont"
-                 style="color:#d96f5d;">&#xe501;</i></a>
+               v-if="isOrNotLogin">
+            <router-link :to="{name:'updatemember'}"><a href="javascript:"
+                 title='点击查看信息、退出操作'> <i class="iconFont"
+                   style="color:#d96f5d;">&#xe501;</i></a></router-link>
           </div>
           <div class="item"
                v-else>
             <router-link :to="{name:'login'}"><a href="javascript:"
-                 title='登录'> <i class="iconFont">&#xe501;</i></a></router-link>
+                 title='点击登录'> <i class="iconFont">&#xe501;</i></a></router-link>
           </div>
 
           <div class="item"> <a target="_blank"
@@ -38,9 +37,7 @@
           <div class="tanks">
             感谢
             <a target="_blank"
-               href="http://vue.jackhu.top">JackHu</a>、
-            <a target="_blank"
-               href="https://www.yangshaofeng.com">CarsonYang</a>支持
+               href="http://vue.jackhu.top">JackHu</a>支持
           </div>
           <!-- 备案信息 -->
           <footer>©2018 /蜀ICP备18005286号-1 </footer>
@@ -73,20 +70,15 @@ export default {
   },
   created () {
 
-    this.isOrNotLogin = isLogin();
+
   },
 
   mounted () {
     // window.addEventListener('scroll', this.handleScroll, true);
-    window.addEventListener('scroll', this.scrollToTop, true)
+    window.addEventListener('scroll', this.scrollToTop, true);
+    this.isOrNotLogin = isLogin();
   },
   methods: {
-    goOut () {
-      localStorage.removeItem('token');
-      localStorage.removeItem('memberinfo');
-      this.isOrNotLogin = false;
-      window.console.log(this.isOrNotLogin)
-    },
     goHome () {
       this.$router.push({ name: 'home' })
     },
@@ -115,7 +107,17 @@ export default {
       } else {
         that.isShow = false
       }
+    },
+    refrshLogin (key) {
+      window.console.log('run')
+      if (key) {
+        this.isOrNotLogin = true;
+        return;
+      }
+      window.console.log(this.isOrNotLogin)
+      this.isOrNotLogin = isLogin();
     }
+
 
   },
   destroyed () {
