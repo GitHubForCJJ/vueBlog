@@ -95,10 +95,11 @@ export default {
       //var id = this.id;
       blog.getItemBlog(obj).then((res) => {
 
-        window.console.log(res.Data.Content);
+        window.console.log(res.Data);
         var content = res.Data.Content;
         res.Data.Content = content;
         this.blogInfo = res.Data;
+        window.console.log(res)
 
       }).catch((err) => {
         var msg = '系统错误';
@@ -191,6 +192,10 @@ export default {
         }
       })
     },
+    //提供给子组件修改Comment数量
+    addCommensViewCount(){
+      this.blogInfo.Comments +=1;
+    }
   }
 }
 </script>

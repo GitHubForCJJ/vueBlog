@@ -140,10 +140,12 @@ export default {
         memberinfo.UserName = that.UserName;
         if(that.fileList.length>0){
         memberinfo.UserIcon=that.fileList[0].url;
+        that.$parent.refrshHeadIcon(that.fileList[0].url)
       }
         updateMember(memberinfo);//更新localstrage
         Toast('更新成功')
         that.$parent.refrshLogin(true);//刷新登录状态
+
         var url = localStorage.getItem('redirurl');
         window.location.href = url;
       }).catch(() => {

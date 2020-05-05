@@ -76,15 +76,15 @@ export default {
 
   },
   created () {
-
-
-  },
-
-  mounted () {
     // window.addEventListener('scroll', this.handleScroll, true);
     window.addEventListener('scroll', this.scrollToTop, true);
     this.isOrNotLogin = isLogin();
     this.headicon=getMemberIcon();
+
+  },
+
+  mounted () {
+
   },
   methods: {
     goHome () {
@@ -121,12 +121,14 @@ export default {
       window.console.log('run')
       if (key) {
         this.isOrNotLogin = true;
-          this.headicon=getMemberIcon();
         return;
       }
+
       window.console.log(this.isOrNotLogin)
       this.isOrNotLogin = isLogin();
-        this.headicon=getMemberIcon();
+    },
+    refrshHeadIcon(url){
+      this.headicon=url;
     }
 
 

@@ -180,6 +180,7 @@ export default {
       obj.Token = getToken();
       obj.Content = content;
       obj.Commentid = commentid;
+      obj.Avatar=getMember().UserIcon;
       blog.addComment(obj).then((res) => {
         window.console.log(res);
         var memberid = getMember();
@@ -187,13 +188,15 @@ export default {
         obj.Memberid = memberid.KID;
         obj.MemberName = memberid.UserName
         obj.CreateTime = 'just right now';
+        obj.Avatar=getMember().UserIcon;
         var list = this.commentList;
         obj.Replys = [];
-        window.console.log('12331231');
+
         if (commentid == '' || commentid == undefined) {
           //新会话
-          window.console.log('新会话');
+          window.console.log(obj);
           list.unshift(obj);
+          this.$parent.addCommensViewCount()
           window.console.log(list);
         }
         else {

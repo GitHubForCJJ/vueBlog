@@ -185,7 +185,7 @@ export default {
   data () {
     return {
       //控制登录  注册  修改密码显示
-      showType: 1,
+      showType: 0,
       resettip: '发送验证码',//重置二维码显示文本
       baseqrcodeimgurl: '',//图片二维码地址
       tip: '发送验证码',
@@ -289,6 +289,8 @@ export default {
       member.memberLogin(fromdata).then((res) => {
         Toast.success('登录成功');
         that.$parent.refrshLogin(true);
+        
+        that.$parent.refrshHeadIcon(res.Data.MemberInfo.UserIcon)
         loading.clear()
         window.console.log(res)
         localStorage.setItem('token', res.Data.Token);
@@ -365,6 +367,10 @@ export default {
         member.memberLogin(that.loginForm).then((res) => {
           Toast.success('登录成功')
           that.$parent.refrshLogin(true);//刷新登录状态
+           if(that.fileList.length>0){
+             window.console.log('regrun')
+            that.$parent.refrshHeadIcon(that.registForm.UserIcon)
+           }
 
           window.console.log(res)
           localStorage.setItem('token', res.Data.Token);
@@ -425,8 +431,10 @@ export default {
         //重置成功自动登录
         member.memberLogin(that.loginForm).then((res) => {
           Toast.success('登录成功')
+
           loading.clear();
           that.$parent.refrshLogin(true);
+
           localStorage.setItem('token', res.Data.Token);
           localStorage.setItem('memberinfo', JSON.stringify(res.Data.MemberInfo));
           var url = localStorage.getItem('redirurl');
