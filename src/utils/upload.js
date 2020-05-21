@@ -30,7 +30,6 @@ const createUId = function () {
 const  update =function update (file, opt) {
   GHM_QINIU_API = `http://qiniu.chenjianjun.info/`;
   return getToken().then((token) => {
-    window.console.log(token)
     opt = ext(opt, {
       types: ['image/png', 'image/jpeg', 'image/gif'],
     });
@@ -50,7 +49,7 @@ const  update =function update (file, opt) {
     return new Promise(((resolve, reject) => {
       qiniu.upload(file, name, token, extra, config).subscribe(
         opt.next || ((ret) => {
-           window.console.log(`上传中：${ret.total.percent}%`);
+
         }),
         reject,
         ret => resolve(GHM_QINIU_API + ret.key),
@@ -76,7 +75,7 @@ const  update =function update (file, opt) {
 const upload = function (em, opt) {
   const $pms = [];
   const files = em.files || em;
-  window.console.log(files.length)
+
 
   for (let i = 0; i < files.length; i++) $pms.push(update(files[i], opt));
   return Promise.all($pms).then((arr) => {

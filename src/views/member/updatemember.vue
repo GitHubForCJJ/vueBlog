@@ -77,7 +77,6 @@ export default {
     },
     //上传文件前的验证
     beforeRead(file) {
-      window.console.log(file)
       if (file.type !== 'image/jpeg'&&file.type!=='image/png'&&file.type!=='image/svg+xml') {
         Toast('请上传 jpg,png,svg 格式图片');
         return false;
@@ -88,15 +87,15 @@ export default {
     afterRead(file) {
       var that=this;
       // 此时可以自行将文件上传至服务器
-      window.console.log(file.file);
+
       var arr=new Array();
       arr.push(file.file);
-      window.console.log(arr)
+ 
       upload(arr, { folder: 'memberavg' })
         .then((res) => {
           that.fileList=[]
           that.fileList.push({url:res[0]})
-          window.console.log(that.fileList)
+   
           //closeLoad();
         })
         .catch((err) => {

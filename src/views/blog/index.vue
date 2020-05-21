@@ -95,11 +95,9 @@ export default {
       //var id = this.id;
       blog.getItemBlog(obj).then((res) => {
 
-        window.console.log(res.Data);
         var content = res.Data.Content;
         res.Data.Content = content;
         this.blogInfo = res.Data;
-        window.console.log(res)
 
       }).catch((err) => {
         var msg = '系统错误';
@@ -115,7 +113,6 @@ export default {
       obj.BlogNum = this.blogNum;
       obj.BlogType = this.blogType;
       blog.getPrenext(obj).then((res) => {
-        window.console.log(res.Data);
         this.preBlog = null;
         this.nextBlog = null;
 
@@ -169,7 +166,6 @@ export default {
 
         }).catch((err) => {
           {
-            window.console.log(err);
             this.disabled = false;
           }
         })
@@ -179,7 +175,6 @@ export default {
     //获取当前登录者是否点赞
     getIsOrPraise () {
       var memid = getMemberid();
-      window.console.log(memid);
       if (memid == 0) {
         return;
       }

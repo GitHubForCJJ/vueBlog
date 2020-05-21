@@ -108,7 +108,6 @@ export default {
     //获取评论列表
     getComments () {
       blog.getComments(this.blogNum).then((res) => {
-        window.console.log(res)
         for (var i in res.Data) {
           this.commentList.push(res.Data[i])
         }
@@ -118,7 +117,6 @@ export default {
     showReply (index, nickname, tomemberid) {
       this.user = isLogin();
       const form = document.getElementById('replyForm' + index);
-      window.console.log(index, nickname, tomemberid)
 
       if (this.user) {
 
@@ -135,7 +133,6 @@ export default {
       }
       else {
         const formbtnarea = form.getElementsByClassName('login')[0];
-        window.console.log(formbtnarea.className)
         if (formbtnarea.className.indexOf('hide') > -1) {
           formbtnarea.className = ' login';
           form.className = '';
@@ -182,7 +179,6 @@ export default {
       obj.Commentid = commentid;
       obj.Avatar=getMember().UserIcon;
       blog.addComment(obj).then((res) => {
-        window.console.log(res);
         var memberid = getMember();
         obj.Commentid = res.Data;//添加评论后我的解决方案是在当前的list中插入对应的对象  添加成功后返回会话id给我
         obj.Memberid = memberid.KID;
@@ -194,10 +190,8 @@ export default {
 
         if (commentid == '' || commentid == undefined) {
           //新会话
-          window.console.log(obj);
           list.unshift(obj);
           this.$parent.addCommensViewCount()
-          window.console.log(list);
         }
         else {
           for (var i in list) {
@@ -207,7 +201,6 @@ export default {
           }
         }
 
-        window.console.log(memberid);
 
       }).catch()
     },

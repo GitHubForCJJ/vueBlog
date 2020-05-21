@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     showReply (index, nickname, tomemberid) {
-      window.console.log("子", index, nickname);
+
       this.$parent.showReply(index, nickname, tomemberid);
     }
 

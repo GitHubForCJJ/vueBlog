@@ -233,7 +233,6 @@ export default {
     },
     //上传文件前的验证
     beforeRead(file) {
-      window.console.log(file)
       if (file.type !== 'image/jpeg'&&file.type!=='image/png'&&file.type!=='image/svg+xml') {
         Toast('请上传 jpg,png,svg 格式图片');
         return false;
@@ -244,15 +243,13 @@ export default {
     afterRead(file) {
       var that=this;
       // 此时可以自行将文件上传至服务器
-      window.console.log(file.file);
       var arr=new Array();
       arr.push(file.file);
-      window.console.log(arr)
+
       upload(arr, { folder: 'memberavg' })
         .then((res) => {
           that.fileList=[]
           that.fileList.push({url:res[0]})
-          window.console.log(that.fileList)
           //closeLoad();
         })
         .catch((err) => {
@@ -292,7 +289,6 @@ export default {
         
         that.$parent.refrshHeadIcon(res.Data.MemberInfo.UserIcon)
         loading.clear()
-        window.console.log(res)
         localStorage.setItem('token', res.Data.Token);
         localStorage.setItem('memberinfo', JSON.stringify(res.Data.MemberInfo));
         var url = localStorage.getItem('redirurl');
@@ -312,7 +308,6 @@ export default {
     //注册
     goRegist () {
       var that = this;
-      window.console.log(that.fileList)
       if (that.registForm.UserAccount == '' || that.registForm.UserAccount.length == 0) {
         Toast.fail('请输入正确的邮箱地址');
         return;
@@ -368,11 +363,9 @@ export default {
           Toast.success('登录成功')
           that.$parent.refrshLogin(true);//刷新登录状态
            if(that.fileList.length>0){
-             window.console.log('regrun')
             that.$parent.refrshHeadIcon(that.registForm.UserIcon)
            }
 
-          window.console.log(res)
           localStorage.setItem('token', res.Data.Token);
           localStorage.setItem('memberinfo', JSON.stringify(res.Data.MemberInfo));
           var url = localStorage.getItem('redirurl');
@@ -462,7 +455,7 @@ export default {
       var that = this;
       var str = '';
       var account = '';
-      window.console.log(that.resetForm)
+
       //处理倒计时
       if (!that.timer) {
         that.count = TIME_COUNT;
@@ -498,15 +491,13 @@ export default {
         that.resetForm.QrcodeKey = str;
         localStorage.setItem('resetqrcode', str);
       }
-      window.console.log(that.resetForm.QrcodeKey)
+
       account = that.resetForm.UserAccount;
 
       member.sendQrcode(account, that.resetForm.QrcodeKey).then((res) => {
-        window.console.log(res);
         Toast('验证码已发出，请留意查看邮件');
 
       }).catch((err) => {
-        window.console.log(err);
         Toast.fail('发送邮件验证码失败，请检查邮箱地址是否正确');
       });
 

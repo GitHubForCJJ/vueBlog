@@ -106,7 +106,7 @@ export default {
         _this.page += 1;
         _this.totleCount = res.Count;
 
-        window.console.log(res);
+    
 
         if (res.Data.length > 0) {
           for (var i in res.Data) {
@@ -132,7 +132,6 @@ export default {
     getTypeList () {
 
       blog.getBlogTypeList().then((res) => {
-        window.console.log(res);
         if (res.Code == 0) {
           this.typeList = res.Data;
         }

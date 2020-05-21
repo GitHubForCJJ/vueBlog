@@ -93,7 +93,6 @@ export default {
     // 点击图片回到顶部方法，加计时器是为了过渡顺滑
     backTop () {
       const that = this
-      window.console.log("12")
       let timer = setInterval(() => {
         let ispeed = Math.floor(-that.scrollTop / 5)
         // document.documentElement.scrollTop = document.body.scrollTop = that.scrollTop + ispeed
@@ -118,13 +117,11 @@ export default {
     },
     //刷新登录状态
     refrshLogin (key) {
-      window.console.log('run')
       if (key) {
         this.isOrNotLogin = true;
         return;
       }
 
-      window.console.log(this.isOrNotLogin)
       this.isOrNotLogin = isLogin();
     },
     refrshHeadIcon(url){

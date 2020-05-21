@@ -25,7 +25,7 @@ const member = {
     registItemMember (obj) {
         var up = {};
         up.Update = obj;
-        window.console.log(obj)
+
         return axios({
             url: '/Member/RegistItemMember',
             data: { Data: JSON.stringify(up) },
